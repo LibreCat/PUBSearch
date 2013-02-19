@@ -1,0 +1,215 @@
+[% INCLUDE header_search.tt %]
+
+<ul class="tabs">
+<li><a href="#searchAll" class="active">Basic Search</a></li>
+<li><a href="#searchPubl">Search Publications</a></li>
+<li><a href="#searchProj">Search Projects</a></li>
+</ul>
+
+<ul class="tabs-content">
+
+<li id="searchAll" class="active">
+
+<form action="[% h.uri_for('/publication') %]" accept-charset="utf-8" class="Form">
+<input name="q" size="35" class="Input2" id="id_ftext" />
+<input type="submit" name="submit" value="Search" class="Submit1" />
+<input type="hidden" name="func" value="search" />
+</form>
+
+</li>
+
+<li id="searchPubl">
+
+<form action="[% h.uri_for('/publication') %]" accept-charset="utf-8" class="Form">
+<fieldset>
+
+<div class="Field">
+<label for="id_ftext" class="Label">Entire Document</label>
+<input name="q" size="35" class="Input2" id="id_ftext" />
+</div>
+
+<div class="Field">
+<label for="id_title" class="Label">Article Title Keyword(s)</label>
+<input name="title" size="35" class="Input2" id="id_title" />
+</div>
+
+<div class="Field">
+<label for="id_author" class="Label">Author</label>
+<input name="author" size="35" class="Input2" id="id_author" />
+</div>
+
+<div class="Field">
+<label for="id_publyear" class="Label">Publication year</label>
+<input name="publyear" size="35" class="Input2" id="id_publyear" />
+</div>
+
+<div class="Field">
+<label for="id_lang" class="Label">Language</label>
+<select size="1" name="lang" id="id_lang">
+<option value="" selected="selected">All languages</option>
+<!-- BEGIN filter_lang.tmpl -->
+
+<option value="eng">English</option>
+<option value="ger">German</option>
+<option value="ara">Arabic</option>
+<option value="chi">Chinese</option>
+<!--<option value="hrv">Croatian</option>-->
+<option value="dan">Danish</option>
+<option value="nld">Dutch</option>
+<option value="fre">French</option>
+<option value="gre">Greek</option>
+<option value="heb">Hebrew</option>
+<option value="hun">Hungarian</option>
+<option value="ita">Italian</option>
+<option value="jpn">Japanese</option>
+<option value="kor">Korean</option>
+<option value="lav">Latvian</option>
+<option value="mon">Mongolian</option>
+<option value="pol">Polish</option>
+<option value="por">Portuguese</option>
+<option value="rum">Romanian</option>
+<option value="rus">Russian</option>
+<option value="spa">Spanish</option>
+<option value="srp">Serbian</option>
+<!-- <option value="mis">Other </option> -->
+<!-- <option value="fin">Finnish</option> -->
+<!-- <option value="ice">Icelandic</option> -->
+<!-- <option value="lat">Lat</option> -->
+<!-- <option value="nor">Norwegian</option> -->
+<!-- <option value="swe">Swedish</option> -->
+ 
+<!-- END filter_lang.tmpl -->
+
+</select>
+</div>
+
+<div class="Field">
+<label for="id_doctype" class="Label">Publication Type</label>
+<select size="1" name="doctype" id="id_doctype" class="Select2">
+<option value="" selected="selected">All Publication Types</option>
+<!-- BEGIN filter_doctype.tmpl -->
+
+<option value="book">Book</option>
+<option value="bookChapter">Book Chapter</option>
+<option value="bookEditor">Book: Editor</option>
+<option value="review">Book Review</option>
+<option value="caseStudy">Case study</option>
+<option value="conferenceAbstract">Conference Abstract</option>
+<option value="conferenceEditor">Conference: Editor</option>
+<option value="conference">Conference Proceeding / Paper</option>
+<option value="dissertation">Dissertation</option>
+<option value="encyclopediaArticle">Encyclopedia Article</option>
+<option value="journalArticle">Journal Article</option>
+<option value="journalEditor">Journal: Editor</option>
+<option value="newspaperArticle">Newspaper Article</option>
+<option value="patent">Patent</option>
+<option value="preprint">Preprint</option>
+<option value="report">Report</option>
+<option value="translation">Translation</option>
+<option value="workingPaper">Working Paper</option>
+<option value="biDissertation">Bielefeld Doctoral Thesis</option>
+<option value="biBachelorThesis">Bielefeld Bachelor Thesis</option>
+<option value="biMasterThesis">Bielefeld Master Thesis</option>
+<option value="biPostdocThesis">Bielefeld Post-Doctoral Habilitation</option>
+ 
+<!-- END filter_doctype.tmpl -->
+
+</select>
+</div>
+
+<div class="Field">
+<label for="id_extern" class="Label">Affiliation</label>
+<select size="1" name="extern" id="id_extern" class="Select2">
+<option value="" selected="selected">All</option>
+<option value="0">Bielefeld University</option>
+<option value="1">Other</option>
+</select>
+</div>
+
+<div class="Field">
+<label for="id_maxrecs" class="Label">Hits per Page</label>
+<select size="1" name="maxrecs" id="id_maxrecs">
+<option value="10" selected="selected">10</option>
+<option value="20">20</option>
+<option value="50">50</option>
+</select>
+</div>
+
+
+<div class="Eintrag Farbig">
+<input type="submit" name="submit" value="Search" class="Submit" />
+<input type="reset" value="Clear fields" class="Button" />
+</div>
+
+<input type="hidden" name="func" value="search" />
+
+</fieldset>
+</form>
+
+</li>
+
+<li id="searchProj">
+
+<form action="/project" accept-charset="utf-8" class="Form">
+<fieldset>
+
+<div class="Field">
+<label for="id_all" class="Label">Search all fields</label>
+<input name="all" size="35" class="Input2" id="id_all" value="[% all %]" />
+</div>
+
+<div class="Field">
+<label for="id_name" class="Label">Project Name</label>
+<input name="name" size="35" class="Input2" id="id_name" value="[% name %]" />
+</div>
+
+<div class="Field">
+<label for="id_person" class="Label">Person</label>
+<input name="person" size="35" class="Input2" id="id_person" value="[% person %]" />
+</div>
+
+<div class="Field">
+<label for="id_year" class="Label">(was active in) Year</label>
+<input name="year" size="35" class="Input2" id="id_year" value="[% year %]" />
+</div>
+
+<div class="Field">
+<label for="id_funders" class="Label">Funder</label>
+<select size="1" name="funders" id="id_funders" class="Select2">
+[% FOREACH key IN search_funders.keys.sort %]
+<option value="[% key %]"
+[% IF funders == key %]
+selected="selected"
+[% END %]
+>[% search_funders.$key %]</option>
+[% END %]
+</select>
+</div>
+
+<div class="Field">
+<label for="id_dept" class="Label">Department</label>
+<select size="1" name="dept" id="id_dept" class="Select2">
+[% FOREACH key IN search_depts.keys.sort %]
+<option value="[% search_depts.$key %]"
+[% IF dept == search_depts.$key %]
+selected="selected"
+[% END %]
+>[% key %]</option>
+[% END %]
+</select>
+</div>
+
+</fieldset>
+
+<div class="Eintrag Farbig">
+<input type="submit" value="Search" name="submit" class="Submit" />
+<input type="reset" value="Clear fields" class="Button" />
+</div>
+
+</form>
+
+</li>
+</ul>
+
+
+[% INCLUDE footer_search.tt %]

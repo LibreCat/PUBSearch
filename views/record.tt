@@ -1,0 +1,621 @@
+[% INCLUDE header.tt %]
+
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+
+[% ebi = h.getEbiData(oId) %]
+
+[% IF preview %]
+[% department = isUnderDepartment %]
+[% author = isAuthoredBy %]
+[% editor = isEditedBy %]
+[% project = belongsToProject %]
+[% documentType = isOfType.typeName %]
+[% qualityControlled = isQualityControlled %]
+[% language.name = usesLanguage.0.languageCode %]
+[% doi = hasDoi.doi %]
+[% doi = doiInfo.doi %]
+[% _id = oId %]
+[% END %]
+
+<!-- get IP of user  and set localUser -->
+[% ip = request.env.HTTP_X_FORWARDED_FOR %]
+[% localUser = ip.match('^129.70').0 %]
+
+<div class="row" style="padding-top:270px;padding-left:27px;" itemscope itemtype="http://schema.org/[% schema.type %]" itemid="[% h.host %]/publication/[% _id %]"><!-- outer border -->
+
+<div class="span11 offset1" id="contenthauptspaltelang"> <!-- main content -->
+  <div class="row">
+    
+    <div class="span8">
+    
+      [% IF preview %]
+      <h1 class="preview">(Preview Page)</h1>
+      [% END %]
+      <h1 itemprop="name" class="underline">[% mainTitle %]</h1>
+
+      [% IF !oId %]
+      <h3>No record found!</h3>
+      [% STOP %]
+      [% END %]
+
+      [% IF citation %]
+      <!-- This citation is displayed in "[% style %]" style. -->
+      [% citation.$style %]<br />
+      [% END %]
+
+      <!-- fulltext -->
+      [% FOREACH fi IN file %]
+      [% IF fi.fileName %]
+      [% IF loop.first %]
+      <div class="frontdoor">
+        <div class="frontdoor_left">Download</div>
+        <div class="frontdoor_right">
+          [% INCLUDE oa_lock.tt %] <a itemprop="url" href="[% h.host %]/download/[% _id %]/[% fi.fileOId %]" title="[% fi.fileName %]">[% fi.fileName %]</a>
+      [% END %]
+      [% IF loop.count > 1 %]
+          <br />[% INCLUDE oa_lock.tt %] <a href="[% h.host %]/download/[% _id %]/[% fi.fileOId %]" title="[% fi.fileName %]">[% fi.fileName %]</a>
+      [% END %]
+      [% IF loop.count > 2 && loop.size > 3 %]
+          <span id="showFiles"><a href="#" onclick="ShowFiles();"><img src="[% h.host %]/images/bullet_pluszeichen.jpg" alt="" style="vertical-align:middle; margin-right:5px;" />All</a></span>
+        </div>
+      </div>
+      [% LAST %]
+      [% END %]
+      [% IF confirmationLetter %](<a href="[% h.host %]/download/[% _id %]/[% confirmationLetter.oId %]">Letter of Confirmation</a>)[% END %]
+      [% IF loop.last %]
+          </div>
+        </div>
+      [% END %]
+      [% END %]
+      [% END %]
+
+      <!-- DOI -->
+      [% IF doi %]
+      <div class="frontdoor">
+        <div class="frontdoor_left">DOI</div>
+        <div class="frontdoor_right"><a itemprop="url" href="http://dx.doi.org/[% doi %]" title="[% doi %]">[% doi %]</a></div>
+      </div>
+      [% ELSIF doiInfo %]
+      <div class="frontdoor">
+        <div class="frontdoor_left">DOI</div>
+        <div class="frontdoor_right"><a itemprop="url" href="http://dx.doi.org/[% doiInfo.doi %]" title="[% doiInfo.doi %]">[% doiInfo.doi %]</a></div>
+      </div>
+      [% END %]
+
+      [% FOREACH ln IN link %]
+      [% IF loop.first %]
+      <div class="frontdoor">
+        <div class="frontdoor_left">URL</div>
+        <div class="frontdoor_right">
+      [% ELSE %]
+          <br />
+      [% END %]
+          <a itemprop="url" href="[% ln.url %]" title="[% ln.url %]">[% ln.url %]</a>
+      [% IF loop.last %]
+        </div>
+      </div>
+      [% END %]
+      [% END %]
+
+      [% IF urn %]
+      <div class="frontdoor">
+        <div class="frontdoor_left">URN</div>
+        <div class="frontdoor_right">[% urn %]</div>
+      </div>
+      [% END %]
+
+      <div class="margin1">
+        <!-- Pubtyp, -status und -quali -->
+        [% IF documentType %]
+        <em>[% h.display_doctypes(documentType) %]</em>
+        [% END %]
+
+        [% IF publicationStatus %]
+        | <em>[% h.display_publstatus(publicationStatus) %]</em>
+        [% END %]
+
+        [% IF qualityControlled %]
+        [% SWITCH qualityControlled %]
+        [% CASE '1' %]
+        | <em>Quality Controlled</em>
+        [% END %]
+        [% END %]
+
+        [% IF language.name %]
+        |<meta itemprop="inLanguage" content="[% schema.langCode %]" /> <em>[% language.name %]</em>
+        [% END %]
+      </div>
+
+    </div><!-- span8 -->
+
+    <div class="span3">
+      [% FOREACH fi IN file %]
+        [% thurl = h.thumbnail_url("$_id", "$fi.fileName") %]
+        [% IF thurl != "no_thumb" %]
+          <a href="/download/[% _id %]/[% fi.fileOId %]" title="[% fi.fileName %]"><img src="[% thurl %]" style="height:200px;" class="img-polaroid"></a>
+          [% LAST %]
+        [% END %]
+        [% IF loop.last AND thurl == "no_thumb" %]
+          <img src="/images/bookDummy.png" style="height:120px;" class="img-polaroid">
+        [% END %]
+      [% END %]
+    </div>
+  </div><!-- row citation and right empty space -->
+
+  <div class="row">
+    <div class="span11">
+      &nbsp;
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="span8">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
+        [% IF ebi %]
+        <li><a href="#researchdata" data-toggle="tab">Research Data</a></li>
+        [% END %]
+      </ul>
+      <div class="tab tab-content" style="padding-left:12px;">
+        <div class="tab-pane active" id="details" style="clear:both;">
+          [% IF reviewedwork  %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Reviewed Work</div>
+            <div class="frontdoor_right">
+              [% reviewedwork %]
+            </div>
+          </div>
+          [% END %]
+
+          [% first_author = '' %]
+          [% FOREACH au IN author %]
+          [% IF loop.first %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Authors</div>
+            <div class="frontdoor_right">
+              [% IF au.personNumber %]<a itemprop="name" href="/person/[% au.personNumber %]">[% au.fullName %]</a><sup class="muted">UniBi</sup>[% ELSE %]<meta itemprop="name" />[% au.fullName %][% END %]
+              [% ELSE %]
+              ; [% IF au.personNumber %]<a itemprop="url" href="/person/[% au.personNumber %]">[% au.fullName %]</a><sup class="muted">UniBi</sup>[% ELSE %]<meta itemprop="name" />[% au.fullName %][% END %]
+              [% END %]
+              [% IF loop.count > 11 %]
+              <span id="showAut">
+                <br /><a href="#" onclick="ShowAuthors();"><img src="[% h.host %]/images/bullet_pluszeichen.jpg" alt="" style="vertical-align:middle; margin-right:5px;" />All</a>
+              </span>
+            </div>
+          </div>
+          [% LAST %]
+          [% END %]
+          [% IF loop.last %]
+            </div>
+          </div>
+          [% END %]
+          [% END %]
+
+          [% FOREACH ed IN editor %]
+          [% IF loop.first %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Editors</div>
+            <div class="frontdoor_right">
+          [% ELSE %]
+          ;
+          [% END %]
+          [% IF ed.personNumber %]<a itemprop="name" href="/person/[% ed.personNumber %]">[% ed.fullName %]</a><sup class="muted">UniBi</sup>[% ELSE %]<meta itemprop="name" />[% ed.fullName %][% END %]
+          [% IF loop.last %]
+            </div>
+          </div>
+          [% END %]
+          [% END %]
+
+          [% FOREACH dep IN department %]
+          [% IF loop.first %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Department</div>
+            <div class="frontdoor_right">
+          [% ELSE %]
+              <br />
+          [% END %]
+              [% dep.name.0.text %]
+          [% IF loop.last %]
+            </div>
+          </div>
+          [% END %]
+          [% END %]
+
+          [% FOREACH proj IN project %]
+          [% IF loop.first %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Project</div>
+            <div class="frontdoor_right">
+          [% ELSE %]
+            <br />
+          [% END %]
+          [% proj.name.0.text %]
+          [% IF loop.last %]
+            </div>
+          </div>
+          [% END %]
+          [% END %]
+
+          [% FOREACH group_entry IN isWithinResearchGroup %]
+          [% IF loop.first %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Research Group</div>
+            <div class="frontdoor_right">
+          [% ELSE %]
+            <br />
+          [% END %]
+          [% group_entry.name.0.text %]
+          [% IF loop.last %]
+            </div>
+          </div>
+          [% END %]
+          [% END %]
+
+          [% FOREACH corp_entry IN corporate %]
+          [% IF loop.first %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Corporate Editor</div>
+            <div class="frontdoor_right">
+          [% ELSE %]
+            <br />
+          [% END %]
+          [% corp_entry %]
+          [% IF loop.last %]
+            </div>
+          </div>
+          [% END %]
+          [% END %]
+
+          [% IF alternativeTitle %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Alternative Title</div>
+            <div class="frontdoor_right" itemprop="alternativeHeadline">
+            [% alternativeTitle.0 %]
+            </div>
+          </div>
+          [% END %]
+
+          [% IF edition %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Edition</div>
+            <div class="frontdoor_right" itemprop="bookEdition">
+            [% edition %]
+            </div>
+          </div>
+          [% END %]
+
+          [% IF abstract %]
+          <div class="frontdoor" itemprop="about">
+            Abstract:<br />
+            [% FOREACH ab IN abstract %]
+            [% UNLESS loop.first %]
+            <br /><br />
+            [% END %]
+            [% ab.text | html %]
+            [% END %]
+          </div>
+          [% END %]
+
+          [% IF keyword %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Keywords</div>
+            <div class="frontdoor_right" itemprop="keywords">
+            [% FOREACH kw IN keyword %]
+            [% IF loop.last %]
+            [% kw %]
+            [% ELSE %]
+            [% kw %] ;
+            [% END %]
+            [% END %]
+            </div>
+          </div>
+          [% END %]
+
+
+          [% IF isbn %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">ISBN</div>
+            <div class="frontdoor_right" itemprop="isbn">
+              [% isbn.0 %]
+            </div>
+          </div>
+          [% END %]
+
+          [% IF issn %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">ISSN</div>
+            <div class="frontdoor_right">
+            [% issn.0 %]
+            </div>
+          </div>
+          [% END %]
+
+          [% IF ipn %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Int. Patent Number</div>
+            <div class="frontdoor_right">
+            [% ipn.0 %]
+            </div>
+          </div>
+          [% END %]
+
+          [% IF ipc %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Int. Patent Classification</div>
+            <div class="frontdoor_right">
+            [% ipc.0 %]
+            </div>
+          </div>
+          [% END %]
+          
+          [% IF isFundedByUBI %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">Financial disclosure</div>
+            <div class="frontdoor_right">Article Processing Charge funded by the <a href="http://www.dfg.de/">Deutsche Forschungsgemeinschaft</a> and the <a href="http://oa.uni-bielefeld.de/publikationsfonds.html">Open Access Publication Fund</a> of Bielefeld University.
+            </div>
+          </div>
+          [% END %]
+
+          <div class="frontdoor">
+            <div class="frontdoor_left">PUB-ID</div>
+            <div class="frontdoor_right">
+            [% oId %] | Link: <a itemprop="url" href="[% h.host %]/publication/[% _id %]">[% h.host %]/publication/[% _id %]</a>
+            </div>
+          </div>
+        </div><!-- tab-pane details -->
+
+        [% IF ebi %]
+        <div class="tab-pane" id="researchdata">
+          <img src="/images/beta_unibi.png" width="50" style="padding-right:36px;">
+          Data provided by the <a href="http://www.ebi.ac.uk/">European Bioinformatics Institute (EBI)</a>.<br /><br />
+          [% FOREACH key IN ebi.keys %]
+          <div class="frontdoor">
+            <div class="frontdoor_left">
+            [% key %]
+            </div>
+            <div class="frontdoor_right">
+              [% FOREACH data IN ebi.$key %]
+              <a href="[% data.url %]">
+              [% SWITCH key %]
+              [% CASE "UniProt" %]
+              [% data.organism %] [% data.protein_name %]
+
+              [% CASE "EMBL" %]
+              [% data.description %]
+
+              [% CASE "InterPro" %]
+              [% data.full_name %]
+
+              [% CASE "RCSB PDB" %]
+              [% data.protein_structure_name %]
+
+              [% CASE "ChEBI" %]
+              [% data.chemical_name %]
+
+              [% CASE "ChEMBL" %]
+              [% data.name %]
+
+              [% CASE "IntAct" %]
+              [% data.intact_detection_method %] [% data.experiment_name %]
+
+              [% END %]
+              </a><br />
+              [% END %]
+            </div>
+          </div>
+          [% END %]
+        </div><!-- tab-pane researchdata -->
+        [% END %]
+
+      </div><!-- tab-content -->
+
+      [% coins_str %]
+
+      <script type="text/javascript"> 
+      var angeschaltet = 0; 
+      function anzeigen(das){ 
+       if(angeschaltet != 0) 
+        document.getElementById(angeschaltet).style.display='none'; 
+       if(document.getElementById(das).style.display=='none') 
+        document.getElementById(das).style.display='block'; 
+       else 
+        document.getElementById(das).style.display='none'; 
+       angeschaltet= das;
+       } 
+      </script> 
+      
+      
+      <!-- Citations -->
+
+      <div class="row">
+      <div class="span11">
+      &nbsp;
+      </div>
+      </div>
+      
+      <a name="cite"></a>
+      <h5 class="overline">Cite this</h5>
+
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#ama" data-toggle="tab">AMA</a></li>
+        <li><a href="#apa" data-toggle="tab">APA</a></li>
+        <li><a href="#frontiers" data-toggle="tab">Frontiers</a></li>
+        <li><a href="#harvard1" data-toggle="tab">Harvard</a></li>
+        <li><a href="#ieee" data-toggle="tab">IEEE</a></li>
+        <li><a href="#lncs" data-toggle="tab">LNCS</a></li>
+        <li><a href="#mla" data-toggle="tab">MLA</a></li>
+  	<li><a href="#bibtex" data-toggle="tab">BibTeX</a></li>
+	<li><a href="#ris" data-toggle="tab">RIS</a></li>
+      </ul>
+
+      <div class="tab-content" style="padding-left:12px;padding-right:10px;padding-bottom:10px;padding-top:10px;margin-top:-20px;border-left:1px solid lightgray;border-right:1px solid lightgray;border-bottom:1px solid lightgray;">
+        <div id="ama" class="tab-pane active">[% citation.ama %]</div>
+        <div id="apa" class="tab-pane">[% citation.apa %]</div> 
+        <div id="frontiers" class="tab-pane">[% citation.frontiers %]</div>
+        <div id="harvard1" class="tab-pane">[% citation.harvard1 %]</div>
+        <div id="ieee" class="tab-pane">[% citation.ieee %]</div>
+        <div id="lncs" class="tab-pane">[% citation.lncs %]</div>
+        <div id="mla" class="tab-pane">[% citation.mla %]</div>
+	<div id="bibtex" class="tab-pane">[% h.export_in_frontdoor(_id, "bibtex") %]</div>
+	<div id="ris" class="tab-pane">[% h.export_in_frontdoor(_id, "ris") %]</div>
+      </div><!-- tab-content -->
+
+    </div><!-- span8 -->
+
+    <div class="span3">
+    
+      <!-- Sources -->
+      [% IF isi %]
+      <h5>Web of Science</h5>
+
+      <a href="http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=PARTNER_APP&SrcAuth=LinksAMR&KeyUT=[% isi %]&DestLinkType=CitingArticles&DestApp=ALL_WOS&UsrCustomerID=05d4f0b0e4886dc98617a3cb42bc82d0" target="_parent">
+      Web of Science&reg; Times Cited: <strong class="wos-times-cited"></strong>
+      </a></li>
+      <script type="text/javascript">
+      $.getJSON('/info/times-cited?ut=[% isi %]', function(data) {
+        $('.wos-times-cited').text(data.times_cited).closest('li').slideDown();
+      });
+      </script><br />
+      <a href="http://ws.isiknowledge.com/cps/openurl/service?url_ver=Z39.88-2004&rft_id=info:ut/[% isi %]">View record in Web of Science&reg;</a>
+      <div class="row">
+        <div class="span3">
+          &nbsp;
+        </div>
+      </div>
+      [% END %]
+
+
+      [% IF medline OR pubmedID OR inspire OR arxiv OR ahf OR phillister %]
+      <h5>Sources</h5>
+
+      [% IF medline %]
+      <p><img src="[% h.host %]/images/icon_pubmed.png" class="textright" alt="" />PMID: [% medline %]<br />
+      <a href="http://www.ncbi.nlm.nih.gov/pubmed/[% medline %]">PubMed</a> | <a href="http://europepmc.org/abstract/MED/[% medline %]">Europe PMC</a></p>
+      [% ELSE %]
+      [% IF pubmedID %]
+      <p><img src="[% h.host %]/images/icon_pubmed.png" class="textright" alt="" />PMID: [% pubmedID %]<br />
+      <a href="http://www.ncbi.nlm.nih.gov/pubmed/[% pubmedID %]">PubMed</a> | <a href="http://europepmc.org/abstract/MED/[% pubmedID %]">Europe PMC</a></p>
+      [% END %]
+      [% END %]
+
+      [% IF arxiv %]
+      <p><img src="[% h.host %]/images/icon_arxiv.png" class="textright" alt="" />arXiv <a href="http://arxiv.org/abs/[% arxiv %]">[% arxiv %]</a></p>
+      [% END %]
+
+      [% IF inspire %]
+      <p><img src="[% h.host %]/images/icon_inspire.png" class="textright" alt="" />Inspire <a href="http://inspirebeta.net/record/[% inspire %]">[% inspire %]</a></p>
+      [% END %]
+      
+      [% IF ahf %]
+      <p>AHF: <a href="http://www.oldenbourg.de/verlag/ahf/hbo.php?F=titel&T=HB&ID=[% ahf %]">[% ahf %]</a></p>
+      [% END %]
+      
+      [% IF phillister %]
+      <p><img src="[% h.host %]/images/icon_uni.png" class="textright" alt="" />PhilLister: <a href="http://phillister.ub.uni-bielefeld.de/publication/[% phillister %]">[% phillister %]</a></p>
+      [% END %]
+      <div class="row">
+        <div class="span3">
+          &nbsp;
+        </div>
+      </div>
+      [% END %]
+
+
+      <!-- Supplements -->
+      [% IF genbankID OR nascseedstockID OR relatedMaterial %]
+      <h5>Supplements</h5>
+
+      <div class="margin1">
+        [% FOREACH id_entry IN genbankID %]
+        [% IF loop.first %]
+        <img src="[% h.host %]/images/icon_genbank.gif" class="textright" alt="" />GenBank:<br />
+        [% END %]
+        <a href="http://www.ncbi.nlm.nih.gov/nuccore/[% id_entry %]" style="margin-right:2px;">[% id_entry %]</a>
+        [% IF loop.count > 14 %]
+        <span id="showGen">
+          <br /><a href="#" onclick="ShowGenBankIDs();"><img src="[% h.host %]/images/bullet_pluszeichen.jpg" alt="" style="vertical-align:middle; margin-right:5px;" />All</a>
+        </span>
+        [% LAST %]
+        [% END %]
+        [% END %]
+      </div>
+
+
+      <div class="margin1">
+        [% FOREACH id_entry IN nascseedstockID %]
+        [% IF loop.first %]
+        <img src="[% h.host %]/images/icon_nasc.png" alt="" class="textright" />NASC<br />
+        [% END %]
+        <a href="http://arabidopsis.info/StockInfo?NASC_id=[% id_entry %]" style="margin-right:10px;">[% id_entry %]</a>
+        [% END %]
+      </div>
+
+      [% FOREACH rel_entry IN relatedMaterial %]
+      [% IF rel_entry.file.fileOId %]
+      <div class="margin1">
+        <a href="[% h.host %]/download/[% _id %]/[% rel_entry.file.fileOId %]" class="description" data-html="true" data-placement="left" rel="tooltip" title="[% IF rel_entry.file.description %]<i>Description:</i><br />[% rel_entry.file.description %]<br /><br />[% END %]<i>Filename:</i><br />[% rel_entry.file.fileName %]"><img src="[% h.host %]/images/icon_weblink2.gif" alt="" class="textright" />[% IF rel_entry.file.fileTitle %][% rel_entry.file.fileTitle %][% ELSE %][% rel_entry.file.fileName %][% END %]</a>
+      </div>
+      <script>
+        $('a.description').tooltip();
+      </script>
+      [% END %]
+      [% END %]
+
+      [% FOREACH rm IN relatedMaterial %]
+      [% IF rm.link %]
+      <div class="margin1">
+        <a href="[% rm.link.url %]" class="description" data-html="true" data-placement="left" rel="tooltip" title="[% IF rm.link.description %]<i>Description:</i><br />[% rm.link.description %]<br /><br />[% END %]<i>Location:</i><br />[% rm.link.url %]"><img src="[% h.host %]/images/icon_weblink2.gif" alt="" class="textright" />[% IF rm.link.linkTitle %][% rm.link.linkTitle %][% ELSE %]Related Material[% END %]</a>
+      </div>
+      <script>
+        $('a.description').tooltip();
+      </script>
+      [% END %]
+      [% END %]
+
+      <div class="row">
+        <div class="span3">
+          &nbsp;
+        </div>
+      </div>
+      [% END %]
+      
+      
+      <h5>Search this title in</h5>
+
+      <p>
+        <a href="http://scholar.google.com/scholar?q=allintitle%3A[% mainTitle %]"><img src="[% h.host %]/images/icon_gs.png" alt="" class="textright" />Google Scholar</a><br />
+        <a href="http://www.base-search.net/Search/Results?lookfor=tit%3A&quot;[% mainTitle %]&quot;&amp;lem=1&amp;type=all&amp;refid=pub"><img src="[% h.host %]/images/icon_base.png" alt="" class="textright" />BASE</a><br />
+        <a href="http://www.google.com/search?q=%22[% mainTitle %]%22"><img src="[% h.host %]/images/icon_google.gif" alt="" class="textright" />Google</a><br />
+        [% SWITCH documentType %]
+        [% CASE [ 'book', 'dissertation' ] %]
+        [% IF localUser %]
+        <a href="http://katalog.ub.uni-bielefeld.de/cgi-bin/search.cgi?fsubmit=1&amp;kat1=freitext&amp;var1=&amp;op1=AND&amp;kat2=ti&amp;var2=[% mainTitle %]&amp;op2=AND&amp;kat3=aup&amp;var3=&amp;sprache=ENG&amp;art=f&amp;opt=&amp;pagesize=10&amp;sort=0&amp;vr=on"><img src="[% h.host %]/images/icon_ub.png" alt="" class="textright" />Library Catalogue</a><br />
+        <a href="http://www.digibib.net/opensearch?LOCATION=361&amp;SG1.SG.361:SGKatalogeBielefeld=on&amp;SG2.SG.361:SGKatalogeDeutschland=on&amp;SG3.SG.361:SGKatalogeInternational=on&amp;QUERY_azTI=[% mainTitle %]"><img src="[% h.host %]/images/icon_digibib.png" alt="" class="textright" />Digibib</a>
+        [% END %]
+        [% IF NOT localUser %]
+        <a href="http://kvk.ubka.uni-karlsruhe.de/hylib-bin/kvk/nph-kvk2.cgi?maske=kvk-last&amp;lang=de&amp;title=KIT-Bibliothek%3A+Karlsruher+Virtueller+Katalog+KVK+%3A+Ergebnisanzeige&amp;head=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fkvk%2Fkvk-kit-head-de-2010-11-08.html&amp;header=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fkvk%2Fkvk-kit-header-de-2010-11-08.html&amp;spacer=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fkvk%2Fkvk-kit-spacer-de-2010-11-08.html&amp;footer=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fkvk%2Fkvk-kit-footer-de-2010-11-08.html&amp;css=none&amp;input-charset=utf-8&amp;Timeout=120&amp;TI=[% mainTitle %]&amp;kataloge=SWB&amp;kataloge=BVB&amp;kataloge=NRW&amp;kataloge=HEBIS&amp;kataloge=HEBIS_RETRO&amp;kataloge=KOBV_SOLR&amp;kataloge=GBV&amp;kataloge=DDB&amp;kataloge=STABI_BERLIN&amp;kataloge=BIBOPAC&amp;kataloge=SWISSBIB&amp;kataloge=LOC_DIREKT&amp;kataloge=WORLDCAT&amp;kataloge=AMAZON_DE&amp;kataloge=AMAZON_US"><img src="[% h.host %]/images/icon_kvk.png" alt="" class="textright" />KVK</a><br />
+        [% END %]
+        [% CASE 'bookChapter' %]
+        [% IF localUser %]
+        <a href="http://katalog.ub.uni-bielefeld.de/cgi-bin/search.cgi?fsubmit=1&amp;kat1=freitext&amp;var1=&amp;op1=AND&amp;kat2=ti&amp;var2=[% mainTitle %]&amp;op2=AND&amp;kat3=aup&amp;var3=&amp;sprache=ENG&amp;art=f&amp;opt=&amp;pagesize=10&amp;sort=0&amp;vr=on"><img src="[% h.host %]/images/icon_ub.png" alt="" class="textright" />Library Catalogue</a><br />
+        <a href="http://www.digibib.net/opensearch?LOCATION=361&amp;SG1.SG.361:SGKatalogeBielefeld=on&amp;SG2.SG.361:SGKatalogeDeutschland=on&amp;SG3.SG.361:SGKatalogeInternational=on&amp;QUERY_azTI=[% FOREACH rel_entry IN entry.host %][% rel_entry.title %][% END %]"><img src="[% h.host %]/images/icon_digibib.png" alt="" class="textright" />Digibib</a>
+        [% END %]
+        [% IF NOT localUser %]
+        <a href="http://kvk.ubka.uni-karlsruhe.de/hylib-bin/kvk/nph-kvk2.cgi?maske=kvk-last&amp;lang=de&amp;title=KIT-Bibliothek%3A+Karlsruher+Virtueller+Katalog+KVK+%3A+Ergebnisanzeige&amp;head=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fkvk%2Fkvk-kit-head-de-2010-11-08.html&amp;header=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fkvk%2Fkvk-kit-header-de-2010-11-08.html&amp;spacer=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fkvk%2Fkvk-kit-spacer-de-2010-11-08.html&amp;footer=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fkvk%2Fkvk%2Fkvk-kit-footer-de-2010-11-08.html&amp;css=none&amp;input-charset=utf-8&amp;Timeout=120&amp;TI=[% FOREACH rel_entry IN entry.host %][% rel_entry.title %][% END %]&amp;kataloge=SWB&amp;kataloge=BVB&amp;kataloge=NRW&amp;kataloge=HEBIS&amp;kataloge=HEBIS_RETRO&amp;kataloge=KOBV_SOLR&amp;kataloge=GBV&amp;kataloge=DDB&amp;kataloge=STABI_BERLIN&amp;kataloge=BIBOPAC&amp;kataloge=SWISSBIB&amp;kataloge=LOC_DIREKT&amp;kataloge=WORLDCAT&amp;kataloge=AMAZON_DE&amp;kataloge=AMAZON_US"><img src="[% h.host %]/images/icon_kvk.png" alt="" class="textright" />KVK</a>
+        [% END %]
+        [% END %]
+      </p>
+
+    </div><!-- span3 -->
+  </div><!-- row tabs and right info menu -->
+
+</div><!-- span11 offset1 main content -->
+
+</div><!-- outer border -->
+
+[% INCLUDE footer.tt %]
+
+</body>
+</html>

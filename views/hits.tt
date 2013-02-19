@@ -1,0 +1,15 @@
+<!-- BEGIN hits.tt -->
+
+<ul class="pub_hitlist">
+<!-- This publication list is displayed in "[% style %]" style and sorted "[% sorto %]" -->
+[% FOREACH entry IN hits %]
+  <li>
+	[% entry.citation.$style %]<br />
+	[% IF !phillister %]
+	[% INCLUDE links.tt %]
+	[% END %]
+  </li>
+[% END %]
+</ul>
+
+<!-- END hits.tt -->

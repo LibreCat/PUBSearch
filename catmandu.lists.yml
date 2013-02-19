@@ -1,0 +1,113 @@
+export_format:
+  - ris
+  - bibtex
+  - json
+  - csv
+search_lang:
+  "All Languages" : ""
+  "English" : eng
+  "German" : ger
+  "Arabic" : ara
+  "Chinese" : chi
+  "Danish" : dan
+  "Dutch" : nld
+  "French" : fre
+  "Greek" : gre
+  "Hebrew" : heb
+  "Hungarian" : hun
+  "Italian" : ita
+  "Japanese" : jpn
+  "Korean" : kor
+  "Latvian" : lav
+  "Mongolian" : mon
+  "Polish" : pol
+  "Portuguese" : por
+  "Romanian" : rum
+  "Russian" : rus
+  "Spanish" : spa
+  "Serbian" : srp
+search_docs:
+  'All Publication Types' : ''
+  'Book' : 'book'
+  'Book Chapter' : 'bookChapter'
+  'Book: Editor' : 'bookEditor'
+  'Book Review' : 'review'
+  'Case study' : 'caseStudy'
+  'Conference Abstract' : 'conferenceAbstract'
+  'Conference: Editor' : 'conferenceEditor'
+  'Conference Proceeding / Paper' : 'conference'
+  'Dissertation' : 'dissertation'
+  'Encyclopedia Article' : 'encyclopediaArticle'
+  'Journal Article' : 'journalArticle'
+  'Journal: Editor' : 'journalEditor'
+  'Newspaper Article' : 'newspaperArticle'
+  'Patent' : 'patent'
+  'Preprint' : 'preprint'
+  'Report' : 'report'
+  'Translation' : 'translation'
+  'Working Paper' : 'workingPaper'
+search_docs_public:
+  'All Document Types' : ''
+  'Book' : 'book'
+  'Book Chapter' : 'bookChapter'
+  'Book: Editor' : 'bookEditor'
+  'Book Review' : 'review'
+  'Case study' : 'caseStudy'
+  'Conference Abstract' : 'conferenceAbstract'
+  'Conference: Editor' : 'conferenceEditor'
+  'Conference Proceeding / Paper' : 'conference'
+  'Dissertation' : 'dissertation'
+  'Encyclopedia Article' : 'encyclopediaArticle'
+  'Journal Article' : 'journalArticle'
+  'Journal: Editor' : 'journalEditor'
+  'Newspaper Article' : 'newspaperArticle'
+  'Patent' : 'patent'
+  'Preprint' : 'preprint'
+  'Report' : 'report'
+  'Translation' : 'translation'
+  'Working Paper' : 'workingPaper'
+search_depts:
+  'All Departments' : ''
+display_docs:
+  'book' : 'Book'
+  'bookchapter' : 'Book Chapter'
+  'bookeditor' : 'Book: Editor'
+  'review' : 'Book Review'
+  'casestudy' : 'Case study'
+  'conferenceabstract' : 'Conference Abstract'
+  'conferenceeditor' : 'Conference: Editor'
+  'conference' : 'Conference Proceeding / Paper'
+  'dissertation' : 'Dissertation'
+  'encyclopediaarticle' : 'Encyclopedia Article'
+  'journalarticle' : 'Journal Article'
+  'journaleditor' : 'Journal: Editor'
+  'newspaperarticle' : 'Newspaper Article'
+  'patent' : 'Patent'
+  'preprint' : 'Preprint'
+  'report' : 'Report'
+  'translation' : 'Translation'
+  'workingpaper' : 'Working Paper'
+display_gs_docs:
+  'book' : 'book'
+  'bookeditor' : 'book'
+  'bookchapter' : 'book chapter'
+  'review' : 'review'
+  'casestudy' : 'case study'
+  'conferenceabstract' : 'conference abstract'
+  'conferenceeditor' : 'conference publication'
+  'conference' : 'conference paper'
+  'dissertation' : 'thesis'
+  'encyclopediaarticle' : 'encyclopedia article'
+  'journalarticle' : 'article'
+  'journaleditor' : 'journal editor'
+  'newspaperarticle' : 'newspaper article'
+  'patent' : 'patent'
+  'preprint' : 'preprint'
+  'report' : 'report'
+  'translation' : 'translation'
+  'workingpaper' : 'working Paper'
+display_publstatus:
+  'published' : 'Published'
+  'submitted' : 'Submitted'
+  'inpress' : 'In Press'
+  'unpublished' : 'Unpublished'

@@ -1,0 +1,29 @@
+<!-- BEGIN bup_publist_js.tmpl -->
+
+[% IF total == 0 %]
+document.write ("<h3>Die pers&ouml;nliche Publikationsliste wird in K&uuml;rze freigegeben.<br />The personal publication list is awaiting approval. Please consult later.</h3>") ;
+document.write ("Weitere Information / Further information: <a href=\"[% h.host %]\">[% h.host %]</a>") ;
+[% STOP %]
+[% END %]
+
+[% num = total; n = 0 %]
+document.write ('<!-- Citations in this list are displayed in "[% style %]" style. -->');
+
+[% FOREACH entry IN hits %]
+document.write ('<div style="padding-left:1em;float:left;">');
+document.write ('[[% num - n %]]');
+[% n = n +1 %]
+document.write ('</div>');
+document.write ('<div style="padding-left:4em;">');
+document.write ('<i>[% entry.publishingYear %] | [% h.display_doctypes(entry.documentType) %] | PUB-ID: [% entry._id %]</i><br />');
+[% IF style == 'frontShort' %]
+document.write ('<a href="/publication/[% entry._id %]">[% entry.mainTitle %]</a><br />');
+[% END %]
+[% string = entry.citation.$style %]
+[% string2 = string.replace("'", "&apos;") %]
+document.write ('[%- string2 -%]<br /> [% IF !phillister %][% INCLUDE links_js.tt %][% END %]</li>');
+document.write ('</div>');
+[% END %]
+
+
+<!-- END bup_publist_js.tmpl -->

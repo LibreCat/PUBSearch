@@ -1,0 +1,30 @@
+[%- USE XML::Strict -%]
+<DIDL xmlns="urn:mpeg:mpeg21:2002:02-DIDL-NS" xmlns:obj="http://lib.ugent.be/didl/qualifiers" xmlns:dii="urn:mpeg:mpeg21:2002:01-DII-NS">
+    <Item obj:role="info:ugent-repo/pro/simple_description">
+        <Descriptor>
+            <Statement mimeType="application/xml; charset=utf-8">
+                <dii:Identifier>info:ugent-repo/biblio/[% _id | xml_strict %]</dii:Identifier>
+            </Statement>
+        </Descriptor>
+        [%- FOREACH d IN doi %]
+        <Descriptor>
+            <Statement mimeType="application/xml; charset=utf-8">
+                <dii:Identifier>info:doi/[% d | xml_strict %]</dii:Identifier>
+            </Statement>
+        </Descriptor>
+        [%- END %]
+        <Component obj:role="info:ugent-repo/pro/descriptive_metadata">
+            <Resource mimeType="application/xml; charset=utf-8">
+                [% INCLUDE views/export/mods.tt %]
+            </Resource>
+        </Component>
+        [%- FOREACH f IN file %]
+        <Component obj:role="info:ugent-repo/pro/execute">
+            <Resource mimeType="[% f.content_type | xml_strict %]" ref="[% _config.uri_base | xml_strict %]/publication/[% _id | xml_strict %]/file/[% f._id | xml_strict %]"/>
+        </Component>
+        [%- END %]
+        <Component obj:role="info:ugent-repo/pro/icon">
+            <Resource mimeType="image/png" ref="[% _config.uri_base | xml_strict %]/assets/img/logo.png"/>
+        </Component>
+    </Item>
+</DIDL>

@@ -1,0 +1,13 @@
+<!-- BEGIN footer.tt -->
+<div>
+<div id="fussstrich" style="padding-left:240px;"></div>
+<div id="fussmenu" style="padding-left:270px;padding-top:10px;">
+<ul>
+<li><span class="footer">&copy; 2012 <a href="http://www.ub.uni-bielefeld.de/english/">Bielefeld University Library</a> | Software developed by <a href="http://www.lub.lu.se/en.html">Lund University Libraries</a>, <a href="https://biblio.ugent.be/en">Ghent University Library</a> and Bielefeld University Library | PUB is supported by the <a href="http://www.dfg.de/">DFG</a></span></li>
+<li class="screen"><a href="[% h.host %]/policy.html">Policy</a></li>
+<li class="screen"><a href="http://www.ub.uni-bielefeld.de/biblio/kontakt/impressum/" target="Imprint" onclick="window.open(this.href,'Imprint','width=900,height=650,left=1,top=1,directories=yes,toolbar=yes,location=yes,menubar=yes,status=yes,scrollbars=yes,resizable=yes')" class="footer">Imprint</a></li>
+</ul>
+</div>
+</div>
+
+<!-- END footer.tt -->

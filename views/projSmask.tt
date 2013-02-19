@@ -1,0 +1,68 @@
+[%  INCLUDE header_search.tt %]
+
+<!-- BEGIN projSmask.tt -->
+
+<form action="/project" accept-charset="utf-8" class="Form">
+<fieldset>
+<legend>Search Bielefeld Projects</legend>
+
+<div class="Field">
+<label for="id_all" class="Label">Search all fields</label>
+<input name="all" size="35" class="input" id="all" value="[% all %]" />
+</div>
+
+<div class="Field">
+<label for="id_name" class="Label">Project Name</label>
+<input name="name" size="35" class="input" id="name" value="[% name %]" />
+</div>
+
+<div class="Field">
+<label for="id_person" class="Label">Person</label>
+<input name="person" size="35" class="input" id="person" value="[% person %]" />
+</div>
+
+<div class="Field">
+<label for="year" class="Label">(was active in) Year</label>
+<input name="year" size="35" class="input" id="year" value="[% year %]" />
+</div>
+
+<div class="Field">
+<label for="funders" class="Label">Funder</label>
+<select size="1" name="funders" id="id_funders" style="width:230px;">
+[% FOREACH key IN search_funders.keys.sort %]
+<option value="[% key %]"
+[% IF funders == key %]
+selected="selected"
+[% END %]
+>[% search_funders.$key %]</option>
+[% END %]
+</select>
+</div>
+
+<div class="Field">
+<label for="dept" class="Label">Department</label>
+<select size="1" name="dept" id="id_dept" style="width:230px;">
+[% FOREACH key IN search_depts.keys.sort %]
+<option value="[% search_depts.$key %]"
+[% IF dept == search_depts.$key %]
+selected="selected"
+[% END %]
+>[% key %]</option>
+[% END %]
+</select>
+</div>
+
+</fieldset>
+
+<div class="Eintrag Farbig">
+<input type="submit" value="Search" name="submit" class="Submit" />
+<input type="reset" value="Clear fields" class="Button" />
+</div>
+
+</form>
+
+[% INCLUDE projList.tt %]
+
+<!-- END projSmask.tt -->
+
+[%  INCLUDE footer_search.tt %]

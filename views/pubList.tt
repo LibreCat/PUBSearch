@@ -1,0 +1,16 @@
+[% INCLUDE header_search.tt %]
+
+[%  IF total == 1%]
+<h2>[% total %] Publication</h2>
+[% ELSE %]
+<h2>[% total %] Publications</h2>
+[% END %]
+
+<span id="innerContent">
+<span id="total" style="display:none;">[% total %]</span>
+[% INCLUDE pagination.tt %]
+
+[% INCLUDE hits.tt %]
+</span>
+
+[% INCLUDE footer_search.tt %]

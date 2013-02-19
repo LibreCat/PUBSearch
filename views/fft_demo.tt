@@ -1,0 +1,28 @@
+<form action="[% h.uri_for('/publication') %]" method="get" class="search-form">
+  <div class="button-append"><input type="text" name="q" value="" placeholder="search"/><button class="button" type="submit" label="Search"></button></div>
+</form>
+
+<script type="text/javascript"> 
+var angeschaltet = 0; 
+function anzeigen(das){ 
+ if(angeschaltet != 0) 
+  document.getElementById(angeschaltet).style.display='none'; 
+ if(document.getElementById(das).style.display=='none') 
+  document.getElementById(das).style.display='block'; 
+ else 
+  document.getElementById(das).style.display='none'; 
+ angeschaltet= das;
+} 
+</script> 
+<div>
+<a name="cite"></a>
+<ul class="tabs">
+<li><a href="#ama" class="active">AMA</a></li>
+<li><a href="#apa">APA</a></li>
+</ul>
+
+<ul class="tabs-content">
+<li id="ama" class="active">[% INCLUDE hits.tt %]</li>
+<li id="apa">[% citation.apa %]</li> 
+</ul>
+</div>

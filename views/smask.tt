@@ -1,0 +1,105 @@
+
+[%  INCLUDE header.tt %]
+
+<!-- BEGIN smask.tt -->
+
+<form action="/pub" accept-charset="utf-8" class="Form">
+<fieldset>
+<legend>Search Bielefeld Publications</legend>
+
+<!--
+[% q %]
+-->
+
+<div class="Field">
+<label for="id_ftext" class="Label">Entire Document</label>
+<input name="ftext" size="35" class="input" id="id_ftext" value="[% ftext %]" />
+</div>
+
+<div class="Field">
+<label for="id_title" class="Label">Article Title Keyword(s)</label>
+<input name="title" size="35" class="input" id="id_title" value="[% title %]" />
+</div>
+
+<div class="Field">
+<label for="id_author" class="Label">Author</label>
+<input name="author" size="35" class="input" id="id_author" value="[% author %]" />
+</div>
+
+<div class="Field">
+<label for="id_publyear" class="Label">Publication year</label>
+<input name="publyear" size="35" class="input" id="id_publyear" value="[% publyear %]" />
+</div>
+
+<div class="Field">
+<label for="id_lang" class="Label">Language</label>
+<select size="1" name="lang" id="id_lang">
+[% FOREACH key IN search_lang.keys.sort %]
+<option value="[% search_lang.$key %]"
+[% IF lang == search_lang.$key %]
+selected="selected"
+[% END %]
+>[% key %]</option>
+[% END %]
+</select>
+</div>
+
+<div class="Field">
+<label for="id_doctype" class="Label">Publication Type</label>
+<select size="1" name="doctype" id="id_doctype" style="width:230px;">
+[% FOREACH key IN search_docs.keys.sort %]
+<option value="[% search_docs.$key %]"
+[% IF doctype == search_docs.$key %]
+selected="selected"
+[% END %]
+>[% key %]</option>
+[% END %]
+</select>
+</div>
+
+<div class="Field">
+<label for="id_extern" class="Label">Affiliation</label>
+<select size="1" name="extern" id="id_extern" style="width:230px;">
+<option value="">All</option>
+<option value="0"
+[% IF extern == 0 %]
+selected="selected"
+[% END %]
+>Bielefeld University</option>
+<option value="1"
+[% IF extern == 1 %]
+selected="selected"
+[% END %]
+>Other</option>
+</select>
+</div>
+
+<div class="Field">
+<label for="id_maxrecs" class="Label">Hits per Page</label>
+<select size="1" name="maxrecs" id="id_maxrecs">
+[% FOREACH maxrec IN pagination_opts %]
+<option value="[% maxrec %]" 
+[% IF maxrec == maxrecs %]
+selected="selected" 
+[% END %]
+>[% maxrec %]</option>
+[% END %]
+</select>
+</div>
+
+
+<div class="Eintrag Farbig">
+<input type="submit" name="submit" value="Search" class="Submit" />
+<input type="reset" value="Clear fields" class="Button" />
+</div>
+
+<input type="hidden" name="func" value="search" />
+
+</fieldset>
+</form>
+
+[% INCLUDE footer.tt %]
+
+<!-- END smask.tt -->
+
+[%  INCLUDE bup_footer.tmpl %]

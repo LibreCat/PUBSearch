@@ -1,0 +1,50 @@
+[% INCLUDE header_search.tt %]
+
+Search All
+
+<ul class="tabs-content">
+
+<li id="search" class="active">
+
+<form action="[% h.uri_for('/search2') %]" accept-charset="utf-8" class="Form">
+<input name="q" size="35" class="Input2" id="id_ftext" value="[% q %]" />
+<input type="submit" name="submit" value="Search" class="Submit1" />
+<input type="hidden" name="func" value="search" />
+</form>
+
+</li>
+</ul>
+
+[% IF q %]
+<ul class="tabs">
+<li id="liPubl" class="active"><a href="#searchPubl"></a></li>
+<li id="liProj"><a href="#searchProj">Projects</a></li>
+</ul>
+
+<ul class="tabs-content">
+<li id="searchPubl" class="active">
+<script type="text/javascript">
+$("#searchPubl").load("/publication?q=[% q %] #innerContent", function(e) {
+    var msg1 = "<a href='#searchPubl'>";
+    var msg2 = " Publications</a>";
+    var total = $("#total", e).text();
+    $("#liPubl").html(msg1 + total + msg2);
+});
+
+</script>
+</li>
+
+<li id="searchProj">
+<script type="text/javascript">
+$("#searchProj").load("/project?q=[% q %] #innerContent", function(event) {
+    var total = $("#total", event).text();
+    var msg1 = "<a href='#searchProj'>";
+    var msg2 = " Projects</a>";
+    $("#liProj").html(msg1 + total + msg2);
+});
+</script>
+</li>
+</ul>
+[% END %]
+
+[% INCLUDE footer_search.tt %]

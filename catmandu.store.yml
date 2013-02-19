@@ -1,0 +1,1451 @@
+default:
+  package: MongoDB
+  options:
+    database_name: pub
+    bags:
+      session:
+        plugins: [Datestamps]
+
+project:
+  package: MongoDB
+  options:
+    database_name: PUBProjects
+
+award:
+  package: MongoDB
+  options:
+    database_name: PUBAwards
+
+citation:
+  package: MongoDB
+  options:
+    database_name: PUBCitations
+
+authority:
+  package: MongoDB
+  options:
+    database_name: PUBAuthority
+    
+viewing:
+  package: MongoDB
+  options:
+    database_name: PUBViewingOptions
+
+europmc:
+  package: MongoDB
+  options:
+    database_name: PUBEuropmc
+
+search:  
+  package: ElasticSearch
+  options:
+    bags:
+      project:
+        cql_mapping:
+          default_index: basic
+          indexes:
+            id:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': true
+              field: '_id'
+            basic:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: '_all'
+              description: "index with common fields..."
+            name:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': true
+              field: 'name'
+            isactive:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'isActive'
+            acronym:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': true
+              field: 'acronym'
+            altname:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': true
+              field: 'alternativeName'
+            grantno:
+              op:
+                '=': true
+                'exact': true
+              field: 'grantNumber'
+            pspelement:
+              op:
+                '=': true
+                'exact': true
+              field: 'pspElement'
+            description:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': true
+              field: 'description'
+            funders:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': true
+              field: 'projectFunders'
+            funded:
+              op:
+                '=': true
+                'exact': true
+              field: 'isFunded'
+            start:
+              op:
+                '=': true
+                'exact': true
+                'within': true
+                '>': true
+                '>=' : true
+                '<': true
+                '<=' : true
+              field: 'startYear'
+            end:
+              op:
+                '=': true
+                'exact': true
+                'within': true
+                '>': true
+                '>=' : true
+                '<': true
+                '<=' : true
+              field: 'endYear'
+            department:
+              op:
+                'all': true
+                'any': true
+                '=': true
+                'exact': {field: 'isOwnedByDepartment.name.exact'}
+              field: ['isOwnedByDepartment.organizationNumber', 'isOwnedByDepartment.name']
+            cooperator:
+              op:
+                'any': true
+                'all': true
+                '=': true
+              field: 'projectCooperators'
+            coordinator:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': {field: 'isOwnedBy.name.fullName.exact'}
+              field: ['isOwnedBy.name.fullName', 'isOwnedBy.personNumber']
+            investigators:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': {field: 'principalInvestigators.name.fullName.exact'}
+              field: ['principalInvestigators.name.fullName', 'principalInvestigators.personNumber']
+            members:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': {field: 'projectMembers.name.fullName.exact'}
+              field: ['projectMembers.name.fullName', 'projectMembers.personNumber']
+            person:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': {field: ['isOwnedBy.name.fullName.exact', 'principalInvestigators.name.fullName.exact', 'projectMembers.name.fullName.exact']}
+              field: ['isOwnedBy.name.fullName', 'isOwnedBy.personNumber', 'principalInvestigators.name.fullName', 'principalInvestigators.personNumber', 'projectMembers.name.fullName', 'projectMembers.personNumber']
+
+      award:
+        cql_mapping:
+          default_index: basic
+          indexes:
+            basic:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: '_all'
+              description: "index with common fields..."
+            id:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': true
+              field: '_id'
+            awardid:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': true
+              field: ['awardId', 'academyId']
+            name:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: 'awardName'
+            academy:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: 'academy'
+            organization:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: 'organization'
+            year:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: 'year'
+              sort: 'true'
+            honoree:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': true
+              field: 'honoree.name.fullName'
+            department:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: ['department.name', 'department.organizationNumber']
+            einrichtung:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: ['einrichtung.name', 'einrichtung.organizationNumber']
+            formerMember:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: 'formerMember'
+            otherUniversity:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: 'otherUniv'
+            comment:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: 'comment'
+
+      publicationItem:
+        cql_mapping:
+          default_index: basic
+          indexes:
+            title:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                '>': {field: 'mainTitle.exact'}
+                'exact': {field: ['mainTitle.exact', 'alternativeTitle.exact']}
+              field: ['mainTitle', 'alternativeTitle', 'mainTitle.exact', 'alternativeTitle.exact']
+              sort: {field: 'mainTitle.exact'}
+            basic:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: '_all'
+              description: "index with common fields..."
+            _basic:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: '_all'
+              description: "index with common fields..."
+            abstract:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+              field: 'abstract.text'
+            keyword:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': {field: 'keyword.exact'}
+              field: 'keyword'
+            keywords:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': {field: 'keyword.exact'}
+              field: 'keyword'
+            issn:
+              op:
+                'any': true
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'issn'
+              sort: true
+            isbn:
+              op:
+                'any': true
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'isbn'
+              sort: true
+            project:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': true
+              field: 'project.projectId'
+            researchgroup:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': {field: ['researchGroup.researchGroupId','researchGroup.name.text.exact']}
+              field: ['researchGroup.researchGroupId', 'researchGroup.name.text']
+            conference:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': {field: 'conferenceName.exact'}
+              field: 'conferenceName'
+              sort: {field: 'conferenceName.exact'}
+            nonlu: &nonlu
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'isNonLuPublication'
+              values: '0 or 1'
+              description: '1 if not a U Bielefeld publication'
+            extern: *nonlu
+            fundedbyubi:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'isFundedByUBI'
+              values: '0 or 1'
+              description: '1 if publication is funded by Publikationsfonds'
+            qualitycontrolled:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'qualityControlled'
+              values: '0 or 1'
+            popularscience:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'popularScience'
+              values: '0 or 1'
+            ecfunded:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'ecFunded'
+              values: '0 or 1'
+            proj:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'proj'
+              values: '0 or 1'
+            publicationidentifier:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: ['issn', 'isbn']
+              description: 'searches both fields, isbn and issn'
+            id:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+                '>': true
+                '<': true
+                '<=': true
+                '>=': true
+                'any': true
+              field: '_id'
+              sort: true
+            isi: &searchExtIdent
+              op:
+                '=': true
+                '<>': true
+                'exact': {field: 'isi.exact'}
+              field: 'isi'
+              sort: {field: 'isi.exact'}
+            medline: *searchExtIdent
+            arxiv: *searchExtIdent
+            inspire: *searchExtIdent
+            reportnumber:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'reportNumber'
+            patentnumber:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'patentNumber'
+            doi:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'doi'
+            publishingyear:
+              op:
+                '>': true
+                '<': true
+                '>=': true
+                '<=': true
+                'within': true
+                '=': true
+                'exact': true
+                '<>': true
+                'any': true
+              field: 'publishingYear'
+              sort: true
+              values: "date in the form yyyy"
+              description: "publishing year"
+            author:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': {field: ['author.fullName.exact', 'author.personNumber']}
+              field: ['author.fullName', 'author.personNumber']
+              sort: {field: 'first_author'}
+            editor:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': {field: ['editor.fullName.exact', 'editor.personNumber']}
+              field: ['editor.fullName', 'editor.personNumber']
+              sort: {field: 'first_editor'}
+            translatedworkauthor:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': {field: ['translatedWorkAuthor.fullName.exact', 'translatedWorkAuthor.personNumber']}
+              field: ['translatedWorkAuthor.fullName', 'translatedWorkAuthor.personNumber']
+            person:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': {field: ['author.fullName.exact', 'author.personNumber', 'editor.fullName.exact', 'editor.personNumber', 'translatedWorkAuthor.fullName.exact', 'translatedWorkAuthor.personNumber']}
+              field: ['author.fullName', 'author.personNumber', 'editor.fullName', 'editor.personNumber', 'translatedWorkAuthor.fullName', 'translatedWorkAuthor.personNumber']
+            department:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+                'any': true
+                'all': true
+                '>': true
+              field: ['department.organizationNumber', 'department.allDepartments']
+              values: 'see the list of affiliations'
+              description: 'will also find any subunits of the given organizationial unit'
+            language:
+              op:
+                '=': true
+                '<>': true
+                'exact': true
+              field: ['language.iso', 'language.name']
+              values: 'three letter language code (iso639-2b) or the language name, e.g. german'
+              description: 'will find both, the iso version and the long version'
+            documenttype:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+                'any' : true
+              field: 'documentType'
+              sort: true
+              values: "see the list of publication types"
+            datelastchanged:
+              op:
+                '>': true
+                '<': true
+                '>=': true
+                '<=': true
+                '=': {field: 'dateLastChanged.str'}
+                'exact': true
+                '<>': true
+              field: 'dateLastChanged.date'
+              sort: true
+              values: "date in the form yyyy-MM-dd HH:mm:ss or yyyy-MM-dd HH:mm"
+            datepdeleted:
+              op:
+                '>': true
+                '<': true
+                '>=': true
+                '<=': true
+                '=': {field: 'datePdeleted.str'}
+                'exact': true
+                '<>': true
+              field: 'datePdeleted.date'
+              sort: true
+              values: "date in the form yyyy-MM-dd HH:mm:ss or yyyy-MM-dd HH:mm"
+            publicationstatus:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'publicationStatus'
+              sort: true
+              values: "see the list of publication statuses"
+            submissionstatus:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'submissionStatus'
+              hide: true
+              sort: true
+            fulltext:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'file.openAccess'
+              values: '1'
+            publication:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'publication'
+              sort: {field: 'publication.exact'}
+            publisher:
+              op:
+                'any': true
+                'all': true
+                '=': true
+                '<>': true
+                'exact': true
+              field: 'publisher'
+              sort: {field: 'publisher.exact'}
+            ddc:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: 'ddc.class'
+              description: 'search for level 2 ddc classes'
+            volume:
+              op:
+                '=': true
+                'exact': true
+                '<>': true
+              field: volume
+              sort: true
+            hide:
+              op:
+                '=': true
+                '<>': true
+              field: hide
+
+    transport: httptiny
+    index_name: ourindex
+    index_settings:
+      analysis:
+         analyzer:
+           default:
+             type: custom
+             tokenizer: standard
+             filter: [standard, lowercase, asciifolding, stop]
+           name:
+             type: custom
+             tokenizer: keyword
+             filter: [lowercase, asciifolding]
+           tag:
+             type: custom
+             tokenizer: keyword
+             filter: [lowercase]
+           datestring:
+             type: custom
+             tokenizer: keyword
+    index_mappings:
+      project:
+        include_in_all: false
+        properties:
+          name: {type: string}
+          isActive: {type: byte}
+          acronym: {type: string}
+          alternativeName: {type: string}
+          grantNumber: {type: string, analyzer: tag}
+          pspElement: {type: string, analyzer: tag}
+          description: {type: string}
+          projectFunders: {type: string}
+          isFunded: {type: string, analyzer: tag}
+          startYear: {type: string, anlyzer: datestring}
+          endYear: {type: date, analyzer: datestring}
+          projectCooperators: {type: string, analyzer: tag}
+          isOwnedByDepartment:
+            properties:
+              organizationNumber: {type: string, analyzer: tag}
+              sbcatId: {type: integer, analyzer: tag}
+              name: 
+                type: multi_field
+                fields:
+                  name: {type: string}
+                  exact: {type: string, analyzer: tag}
+          isOwnedBy: &personField2
+            properties:
+              personNumber: {type: string, analyzer: tag}
+              name:
+                properties:
+                  fullName:
+                    type: multi_field
+                    fields:
+                      fullName: {type: string}
+                      exact: {type: string, analyzer: tag}
+          principalInvestigators: *personField2
+          projectMembers: *personField2
+
+      award:
+        include_in_all: false
+        properties:
+          awardData:
+            properties:
+              title: {type: string}
+              _id: {type: string}
+          awardId: {type: string, analyzer: tag}
+          academyData:
+            properties:
+              title: {type: string}
+              _id: {type: string}
+          academyId: {type: string, analyzer: tag}
+          organization: {type: string}
+          year: {type: string, analyzer: tag}
+          honoree:
+            properties:
+              name:
+                properties:
+                  fullName:
+                    type: multi_field
+                    fields:
+                      fullName: {type: string}
+                      exact: {type: string, analyzer: tag}
+                  givenName: {type: string}
+                  surname: {type: string}
+                  personTitle: {type: string, index: not_analyzed}
+              personNumber: {type: integer, analyzer: tag}
+          department:
+            properties:
+              organizationNumber: {type: string, analyzer: tag}
+              sbcatId: {type: integer, analyzer: tag}
+              name: 
+                type: multi_field
+                fields:
+                  name: {type: string}
+                  exact: {type: string, analyzer: tag}
+          einrichtung:
+            properties:
+              organizationNumber: {type: string, analyzer: tag}
+              sbcatId: {type: integer, analyzer: tag}
+              name: 
+                type: multi_field
+                fields:
+                  name: {type: string}
+                  exact: {type: string, analyzer: tag}
+          formerMember: {type: string, analyzer: tag}
+          otherUniv: {type: string}
+          proof: {type: string, index: not_analyzed}
+          url: {type: string, index: not_analyzed}
+          comment: {type: string}
+          
+      publicationItem:
+        include_in_all: false  
+        properties:
+          _id: {type: string, include_in_all: true}
+          mainTitle: &titleField
+            type: multi_field
+            fields:
+              mainTitle: {type: string, include_in_all: true}
+              exact: {type: string, analyzer: tag}
+          alternativeTitle: *titleField
+          author: &personField
+             type: object
+             properties:
+               personNumber: {type: string, include_in_all: true}
+               fullName:
+                 type: multi_field
+                 fields:
+                   fullName: {type: string, include_in_all: true}
+                   exact: {type: string, analyzer: tag}
+          first_author: {type: string, analyzer: tag}
+          editor: *personField
+          translatedWorkAuthor: *personField
+          documentType: {type: string, analyzer: tag}
+          publishingYear: {type: date, format: year, include_in_all: true}
+          articleType: {type: string, analyzer: tag}
+          language: 
+            properties:
+              iso: {type: string, analyzer: tag}
+              name: {type: string, analyzer: tag}
+          isNonLuPublication: {type: byte}
+          isFundedByUBI: {type: byte}
+          qualityControlled: {type: byte}
+          popularScience: {type: byte}
+          ecFunded: {type: byte}
+          volume: {type: string, analyzer: tag}
+          hide: {type: string, analyzer: tag}
+          issue: {type: string}
+          isbn: {type: string, analyzer: tag, include_in_all: true}
+          issn: {type: string, analyzer: tag, include_in_all: true}
+          submissionStatus: {type: string, analyzer: tag}
+          publicationStatus: {type: string, analyzer: tag}
+          reportNumber: {type: string, analyzer: tag}
+          patentNumber: {type: string, analyzer: tag}
+          conferenceName:
+            type: multi_field
+            fields:
+              conferenceName: {type: string, include_in_all: true}
+              exact: {type: string, analyzer: tag}
+          conferenceDate: {type: string, index: not_analyzed}
+          abstract:
+            properties:
+              text: {type: string, include_in_all: true}
+          keyword:
+            type: multi_field
+            fields:
+              keyword: {type: string, include_in_all: true}
+              exact: {type: string, analyzer: tag}
+          department:
+            properties:
+              organizationNumber: {type: string, analyzer: tag}
+              allDepartments: {type: string, analyzer: tag}
+          proj: {type: byte}
+          project:
+            properties:
+              projectId: {type: string, analyzer: tag}
+          researchGroup:
+            properties:
+              researchGroupId: {type: string, analyzer: tag}
+              name:
+                properties:
+                  text:
+                    type: multi_field
+                    fields:
+                      text: {type: string}
+                      exact: {type: string, analyzer: tag}
+          publication:
+            type: multi_field
+            fields:
+              publication: {type: string, include_in_all: true}
+              exact: {type: string, analyzer: tag}
+          publisher:
+            type: multi_field
+            fields:
+              publisher: {type: string, include_in_all: true}
+              exact: {type: string, analyzer: tag}
+          doi: {type: string, analyzer: tag}
+          ddc:
+            properties:
+              class: {type: string}
+          dateLastChanged: &datefield
+            type: multi_field
+            fields:
+              date: {type: date, format: "yyy-MM-dd HH:mm:ss||yyyy-MM-dd||yyyy||yyyy-MM"}
+              str: {type: string, analyzer: datestring}
+          file:
+            properties:
+              openAccess: {type: byte}
+
+SRU:
+  filter: 'submissionstatus exact public'
+  default_record_schema: mods
+  record_schemas:
+    -
+      identifier: "info:srw/schema/1/mods-v3.3"
+      name: mods
+      fix: 
+        - MODS_mapping()
+      template: export/mods
+OAI:
+  filter: 'submissionstatus exact public'
+  datestamp_field: dateLastChanged
+  repositoryName: PUB - Publications at Bielefeld University
+  adminEmail: mail@yourdomain.de
+  earliestDatestamp: "1970-01-01T00:00:01Z"
+  deletedRecord: persistent
+  repositoryIdentifier: pub.uni-bielefeld.de
+  batchSize: 200
+  delimiter: ":"
+  sampleIdentifier: "oai:pub.uni-bielefeld.de:1585315"
+  metadata_formats:
+    -
+      metadataPrefix: oai_dc
+      schema: "http://www.openarchives.org/OAI/2.0/oai_dc.xsd"
+      metadataNamespace: "http://www.openarchives.org/OAI/2.0/oai_dc/"
+      template: export/oai_dc
+      fix:
+        - publication_to_dc()
+    -
+      metadataPrefix: mods
+      schema: "http://www.loc.gov/standards/mods/v3/mods-3-0.xsd"
+      metadataNamespace: "http://www.loc.gov/mods/v3"
+      template: export/mods
+      filter: 'submissionstatus exact public'
+      fix:
+        - MODS_mapping()
+    -
+      metadataPrefix: epicur
+      schema: http://www.persistent-identifier.de/xepicur/version1.0/xepicur.xsd
+      metadataNamespace: urn:nbn:de:1111-2004033116
+      template: export/oai_epicur
+      filter: 'submissionstatus exact public AND fulltext exact 1'
+      fix:
+        - publication_to_epicur()
+    -
+      metadataPrefix: xMetaDissPlus
+      schema: http://files.dnb.de/standards/xmetadissplus/xmetadissplus.xsd
+      metadataNamespace: http://www.d-nb.de/standards/xmetadissplus
+      template: export/oai_xmdp
+      filter: 'submissionstatus exact public AND fulltext exact 1'
+      fix:
+        - publication_to_xmdp()
+  sets:
+    -
+      setSpec: bi
+      setName: All BI publications (already published)
+      cql: 'NOT nonlu exact 1'
+    -
+      setSpec: bookChapterFtxt
+      setName: Book Chapter with fulltext
+      cql: 'documenttype exact bookChapter AND fulltext exact 1'
+    -
+      setSpec: bookEditor
+      setName: Book Editor
+      cql: 'documenttype exact bookEditor'
+    -
+      setSpec: bookEditorFtxt
+      setName: Book Editor with fulltext
+      cql: 'documenttype exact bookEditor AND fulltext exact 1'
+    -
+      setSpec: bookFtxt
+      setName: Book
+      cql: 'documenttype exact book AND fulltext exact 1'
+    -
+      setSpec: caseStudy
+      setName: Case Study
+      cql: 'documenttype exact caseStudy'
+    -
+      setSpec: caseStudyFtxt
+      setName: Case Study with fulltext
+      cql: 'documenttype exact caseStudy AND fulltext exact 1'
+    -
+      setSpec: conferenceAbstracFtxt
+      setName: Conference Abstract with fulltext
+      cql: 'documenttype exact conferenceAbstract AND fulltext exact 1'
+    -
+      setSpec: conferenceAbstract
+      setName: Conference Abstract
+      cql: 'documenttype exact conferenceAbstract'
+    -
+      setSpec: conferenceEditor
+      setName: Conference Editor
+      cql: 'documenttype exact conferenceEditor'
+    -
+      setSpec: conferenceEditorFtxt
+      setName: Conference Editor with fulltext
+      cql: 'documenttype exact conferenceEditor AND fulltext exact 1'
+    -
+      setSpec: conferenceFtxt
+      setName: Conference Proceeding/Paper with fulltext
+      cql: 'documenttype exact conference AND fulltext exact 1'
+    -
+      setSpec: ddc:000
+      setName: Generalities, knowledge, the book
+      cql: 'fulltext exact 1 AND ddc exact 000'
+    -
+      setSpec: ddc:004
+      setName: Data processing, computer science, computer systems
+      cql: 'fulltext exact 1 AND ddc exact 004'
+    -
+      setSpec: ddc:010
+      setName: Bibliographies
+      cql: 'fulltext exact 1 AND ddc exact 010'
+    -
+      setSpec: ddc:020
+      setName: Library and information sciences
+      cql: 'fulltext exact 1 AND ddc exact 020'
+    -
+      setSpec: ddc:030
+      setName: Encyclopedias and books of facts
+      cql: 'fulltext exact 1 AND ddc exact 030'
+    -
+      setSpec: ddc:050
+      setName: Magazines, journals and serials
+      cql: 'fulltext exact 1 AND ddc exact 050'
+    -
+      setSpec: ddc:060
+      setName: Associations, organizations, and museum science
+      cql: 'fulltext exact 1 AND ddc exact 060'
+    -
+      setSpec: ddc:070
+      setName: News media, journalism and publishing
+      cql: 'fulltext exact 1 AND ddc exact 070'
+    -
+      setSpec: ddc:080
+      setName: General collections
+      cql: 'fulltext exact 1 AND ddc exact 080'
+    -
+      setSpec: ddc:090
+      setName: Manuscripts and rare books
+      cql: 'fulltext exact 1 AND ddc exact 090'
+    -
+      setSpec: ddc:100
+      setName: Philosophy
+      cql: 'fulltext exact 1 AND ddc exact 100'
+    -
+      setSpec: ddc:130
+      setName: Parapsychology and occultism
+      cql: 'fulltext exact 1 AND ddc exact 130'
+    -
+      setSpec: ddc:150
+      setName: Psychology
+      cql: 'fulltext exact 1 AND ddc exact 150'
+    -
+      setSpec: ddc:200
+      setName: Religion, Philosophy and theory of religion
+      cql: 'fulltext exact 1 AND ddc exact 200'
+    -
+      setSpec: ddc:220
+      setName: Bible
+      cql: 'fulltext exact 1 AND ddc exact 220'
+    -
+      setSpec: ddc:230
+      setName: Christianity and Christian theology
+      cql: 'fulltext exact 1 AND ddc exact 230'
+    -
+      setSpec: ddc:290
+      setName: Comparative religion and other religions
+      cql: 'fulltext exact 1 AND ddc exact 290'
+    -
+      setSpec: ddc:300
+      setName: Social sciences, sociology and anthropology
+      cql: 'fulltext exact 1 AND ddc exact 300'
+    -
+      setSpec: ddc:310
+      setName: Statistics
+      cql: 'fulltext exact 1 AND ddc exact 310'
+    -
+      setSpec: ddc:320
+      setName: Political science
+      cql: 'fulltext exact 1 AND ddc exact 320'
+    -
+      setSpec: ddc:330
+      setName: Economics
+      cql: 'fulltext exact 1 AND ddc exact 330'
+    -
+      setSpec: ddc:340
+      setName: Law
+      cql: 'fulltext exact 1 AND ddc exact 340'
+    -
+      setSpec: ddc:350
+      setName: Public administration
+      cql: 'fulltext exact 1 AND ddc exact 350'
+    -
+      setSpec: ddc:355
+      setName: Military science
+      cql: 'fulltext exact 1 AND ddc exact 355'
+    -
+      setSpec: ddc:360
+      setName: Social problems and social services
+      cql: 'fulltext exact 1 AND ddc exact 360'
+    -
+      setSpec: ddc:370
+      setName: Education
+      cql: 'fulltext exact 1 AND ddc exact 370'
+    -
+      setSpec: ddc:380
+      setName: Commerce, communications, transportation
+      cql: 'fulltext exact 1 AND ddc exact 380'
+    -
+      setSpec: ddc:390
+      setName: Customs, etiquette, folklore
+      cql: 'fulltext exact 1 AND ddc exact 390'
+    -
+      setSpec: ddc:400
+      setName: Language, linguistics
+      cql: 'fulltext exact 1 AND ddc exact 400'
+    -
+      setSpec: ddc:420
+      setName: English and Old English languages
+      cql: 'fulltext exact 1 AND ddc exact 420'
+    -
+      setSpec: ddc:430
+      setName: German language
+      cql: 'fulltext exact 1 AND ddc exact 430'
+    -
+      setSpec: ddc:439
+      setName: Other Germanic languages
+      cql: 'fulltext exact 1 AND ddc exact 439'
+    -
+      setSpec: ddc:440
+      setName: French and related languages
+      cql: 'fulltext exact 1 AND ddc exact 440'
+    -
+      setSpec: ddc:450
+      setName: Italian, Romanian and related languages
+      cql: 'fulltext exact 1 AND ddc exact 450'
+    -
+      setSpec: ddc:460
+      setName: Spanish and Portuguese languages
+      cql: 'fulltext exact 1 AND ddc exact 460'
+    -
+      setSpec: ddc:470
+      setName: Latin and Italic languages
+      cql: 'fulltext exact 1 AND ddc exact 470'
+    -
+      setSpec: ddc:480
+      setName: Classical and modern Greek languages
+      cql: 'fulltext exact 1 AND ddc exact 480'
+    -
+      setSpec: ddc:490
+      setName: Other languages
+      cql: 'fulltext exact 1 AND ddc exact 490'
+    -
+      setSpec: ddc:500
+      setName: Science
+      cql: 'fulltext exact 1 AND ddc exact 500'
+    -
+      setSpec: ddc:510
+      setName: Mathematics
+      cql: 'fulltext exact 1 AND ddc exact 510'
+    -
+      setSpec: ddc:520
+      setName: Astronomy and allied sciences
+      cql: 'fulltext exact 1 AND ddc exact 520'
+    -
+      setSpec: ddc:530
+      setName: Physics
+      cql: 'fulltext exact 1 AND ddc exact 530'
+    -
+      setSpec: ddc:540
+      setName: Chemistry and allied sciences
+      cql: 'fulltext exact 1 AND ddc exact 540'
+    -
+      setSpec: ddc:550
+      setName: Earth sciences and geology
+      cql: 'fulltext exact 1 AND ddc exact 550'
+    -
+      setSpec: ddc:560
+      setName: Fossils and prehistoric life
+      cql: 'fulltext exact 1 AND ddc exact 560'
+    -
+      setSpec: ddc:570
+      setName: Life sciences, biology
+      cql: 'fulltext exact 1 AND ddc exact 570'
+    -
+      setSpec: ddc:580
+      setName: Plants (Botany)
+      cql: 'fulltext exact 1 AND ddc exact 580'
+    -
+      setSpec: ddc:590
+      setName: Animals (Zoology)
+      cql: 'fulltext exact 1 AND ddc exact 590'
+    -
+      setSpec: ddc:600
+      setName: Technology (Applied sciences)
+      cql: 'fulltext exact 1 AND ddc exact 600'
+    -
+      setSpec: ddc:610
+      setName: Medicine and health
+      cql: 'fulltext exact 1 AND ddc exact 610'
+    -
+      setSpec: ddc:620
+      setName: Engineering
+      cql: 'fulltext exact 1 AND ddc exact 620'
+    -
+      setSpec: ddc:630
+      setName: Agriculture and related technologies (including veterinary medicine)
+      cql: 'fulltext exact 1 AND ddc exact 630'
+    -
+      setSpec: ddc:640
+      setName: Home and family management
+      cql: 'fulltext exact 1 AND ddc exact 640'
+    -
+      setSpec: ddc:650
+      setName: Management and public relations
+      cql: 'fulltext exact 1 AND ddc exact 650'
+    -
+      setSpec: ddc:660
+      setName: Chemical engineering
+      cql: 'fulltext exact 1 AND ddc exact 660'
+    -
+      setSpec: ddc:670
+      setName: Manufacturing
+      cql: 'fulltext exact 1 AND ddc exact 670'
+    -
+      setSpec: ddc:690
+      setName: Building and construction
+      cql: 'fulltext exact 1 AND ddc exact 690'
+    -
+      setSpec: ddc:700
+      setName: Arts
+      cql: 'fulltext exact 1 AND ddc exact 700'
+    -
+      setSpec: ddc:710
+      setName: Landscaping and area planning
+      cql: 'fulltext exact 1 AND ddc exact 710'
+    -
+      setSpec: ddc:720
+      setName: Architecture
+      cql: 'fulltext exact 1 AND ddc exact 720'
+    -
+      setSpec: ddc:730
+      setName: Sculpture, numismatics, ceramics, and metalwork
+      cql: 'fulltext exact 1 AND ddc exact 730'
+    -
+      setSpec: ddc:740
+      setName: Drawing and decorative arts
+      cql: 'fulltext exact 1 AND ddc exact 740'
+    -
+      setSpec: ddc:741.5
+      setName: Cartoons, caricatures
+      cql: 'fulltext exact 1 AND ddc exact 741.5'
+    -
+      setSpec: ddc:750
+      setName: Painting
+      cql: 'fulltext exact 1 AND ddc exact 750'
+    -
+      setSpec: ddc:760
+      setName: Graphic arts, prints
+      cql: 'fulltext exact 1 AND ddc exact 760'
+    -
+      setSpec: ddc:770
+      setName: Photography and computer art
+      cql: 'fulltext exact 1 AND ddc exact 770'
+    -
+      setSpec: ddc:780
+      setName: Music
+      cql: 'fulltext exact 1 AND ddc exact 780'
+    -
+      setSpec: ddc:790
+      setName: Recreational and performing arts
+      cql: 'fulltext exact 1 AND ddc exact 790'
+    -
+      setSpec: ddc:791
+      setName: Public performances
+      cql: 'fulltext exact 1 AND ddc exact 791'
+    -
+      setSpec: ddc:792
+      setName: Stage presentations
+      cql: 'fulltext exact 1 AND ddc exact 792'
+    -
+      setSpec: ddc:793
+      setName: Indoor games and amusements
+      cql: 'fulltext exact 1 AND ddc exact 793'
+    -
+      setSpec: ddc:796
+      setName: Athletic and outdoor sports and games
+      cql: 'fulltext exact 1 AND ddc exact 796'
+    -
+      setSpec: ddc:800
+      setName: Literature, rhetoric, and criticism
+      cql: 'fulltext exact 1 AND ddc exact 800'
+    -
+      setSpec: ddc:810
+      setName: American literature in English
+      cql: 'fulltext exact 1 AND ddc exact 810'
+    -
+      setSpec: ddc:820
+      setName: English and Old English literatures
+      cql: 'fulltext exact 1 AND ddc exact 820'
+    -
+      setSpec: ddc:830
+      setName: German literature
+      cql: 'fulltext exact 1 AND ddc exact 830'
+    -
+      setSpec: ddc:839
+      setName: Other Germanic literatures
+      cql: 'fulltext exact 1 AND ddc exact 839'
+    -
+      setSpec: ddc:840
+      setName: French and related literatures
+      cql: 'fulltext exact 1 AND ddc exact 840'
+    -
+      setSpec: ddc:850
+      setName: Italian, Romanian and related literatures
+      cql: 'fulltext exact 1 AND ddc exact 850'
+    -
+      setSpec: ddc:860
+      setName: Spanish and Portuguese literatures
+      cql: 'fulltext exact 1 AND ddc exact 860'
+    -
+      setSpec: ddc:870
+      setName: Latin and Italic literatures
+      cql: 'fulltext exact 1 AND ddc exact 870'
+    -
+      setSpec: ddc:880
+      setName: Classical and modern Greek literatures
+      cql: 'fulltext exact 1 AND ddc exact 880'
+    -
+      setSpec: ddc:890
+      setName: Literatures of other languages
+      cql: 'fulltext exact 1 AND ddc exact 890'
+    -
+      setSpec: ddc:900
+      setName: History
+      cql: 'fulltext exact 1 AND ddc exact 900'
+    -
+      setSpec: ddc:910
+      setName: Geography and travel
+      cql: 'fulltext exact 1 AND ddc exact 910'
+    -
+      setSpec: ddc:914.3
+      setName: Geography of and travel in Germany
+      cql: 'fulltext exact 1 AND ddc exact 914.3'
+    -
+      setSpec: ddc:920
+      setName: Biography, genealogy, and insignia
+      cql: 'fulltext exact 1 AND ddc exact 920'
+    -
+      setSpec: ddc:930
+      setName: History of ancient world (to ca. 499), archaeology
+      cql: 'fulltext exact 1 AND ddc exact 930'
+    -
+      setSpec: ddc:940
+      setName: History of Europe
+      cql: 'fulltext exact 1 AND ddc exact 940'
+    -
+      setSpec: ddc:943
+      setName: History of Germany
+      cql: 'fulltext exact 1 AND ddc exact 943'
+    -
+      setSpec: ddc:950
+      setName: History of Asia
+      cql: 'fulltext exact 1 AND ddc exact 950'
+    -
+      setSpec: ddc:960
+      setName: History of Africa
+      cql: 'fulltext exact 1 AND ddc exact 960'
+    -
+      setSpec: ddc:970
+      setName: History of North America
+      cql: 'fulltext exact 1 AND ddc exact 970'
+    -
+      setSpec: ddc:980
+      setName: History of South America
+      cql: 'fulltext exact 1 AND ddc exact 980'
+    -
+      setSpec: ddc:990
+      setName: History of other areas
+      cql: 'fulltext exact 1 AND ddc exact 990'
+    -
+      setSpec: dissertationFtxt
+      setName: Dissertation with fulltext
+      cql: 'documenttype exact dissertation AND fulltext exact 1'
+    -
+      setSpec: doc-type:article
+      setName: Article
+      cql: 'documenttype exact journalArticle'
+    -
+      setSpec: doc-type:book
+      setName: Book
+      cql: 'documenttype exact book'
+    -
+      setSpec: doc-type:bookPart
+      setName: BookPart
+      cql: 'documenttype exact bookChapter'
+    -
+      setSpec: doc-type:conferenceObject
+      setName: ConferenceObject
+      cql: 'documenttype exact conference'
+    -
+      setSpec: doc-type:doctoralThesis
+      setName: DoctoralThesis
+      cql: 'documenttype exact dissertation'
+    -
+      setSpec: doc-type:preprint
+      setName: Preprint
+      cql: 'documenttype exact preprint'
+    -
+      setSpec: doc-type:report
+      setName: Report
+      cql: 'documenttype exact report'
+    -
+      setSpec: doc-type:review
+      setName: Review
+      cql: 'documenttype exact review'
+    -
+      setSpec: doc-type:workingPaper
+      setName: Working Paper
+      cql: 'documenttype exact workingPaper'
+    -
+      setSpec: driver
+      setName: All documents with fulltext
+      cql: 'fulltext exact 1'
+    -
+      setSpec: ec_fundedresources
+      setName: EC funded (OpenAire)
+      cql: 'openaire exact 1'
+    -
+      setSpec: journalArticleFtxt
+      setName: Journal Article with fulltext
+      cql: 'documenttype exact journalArticle AND fulltext exact 1'
+    -
+      setSpec: licentiateThesis
+      setName: Licentiate Thesis
+      cql: 'documenttype exact licentiateThesis'
+    -
+      setSpec: licentiateThesisFtxt
+      setName: Licentiate Thesis with fulltext
+      cql: 'documenttype exact licentiateThesis AND fulltext exact 1'
+    -
+      setSpec: newspaperArticle
+      setName: Newspaper Article
+      cql: 'documenttype exact newspaperArticle'
+    -
+      setSpec: newspaperArticleFtxt
+      setName: Newspaper Article with fulltext
+      cql: 'documenttype exact newspaperArticle AND fulltext exact 1'
+    -
+      setSpec: open_access
+      setName: All documents with fulltext
+      cql: 'fulltext exact 1'
+    -
+      setSpec: preprintFtxt
+      setName: Preprint with fulltext
+      cql: 'documenttype exact preprint AND fulltext exact 1'
+    -
+      setSpec: reportFtxt
+      setName: Report with fulltext
+      cql: 'documenttype exact report AND fulltext exact 1'
+    -
+      setSpec: reviewFtxt
+      setName: Book Review with fulltext
+      cql: 'documenttype exact review AND fulltext exact 1'
+    -
+      setSpec: translation
+      setName: Translation
+      cql: 'documenttype exact translation'
+    -
+      setSpec: translationFtxt
+      setName: Translation with fulltext
+      cql: 'documenttype exact translation AND fulltext exact 1'
+    -
+      setSpec: workingPaperFtxt
+      setName: Working Paper with fulltext
+      cql: 'documenttype exact workingPaper AND fulltext exact 1'
+
+default_page_size: 100
+default_searchpage_size: 10
+maximum_page_size: 1000
+pagination_options:
+    - 10
+    - 20
+    - 50
+    - 100
+sort_options:
+    - {key: publishingyear, label: "Publishing year"}
+    - {key: title, label: "Title" }
+    - {key: author, label: "First author"}
+    - {key: documenttype, label: "Documenttype"}
+    - {key: publication, label: "Publication/ Series/ Journal"}
+default_sort:
+  - {field: publishingYear, order: desc}
+  - {field: dateLastChanged, order: desc}
+default_publication_sort: [publishingYear.desc, relevance.desc]
+search_ops:
+    term: "is"
+    not_term: "isn't"
+    text: "matches"
+    'exact.text': "exactly matches"
+    not_text: "doesn't match"
+    phrase: "contains"
+    not_phrase: "doesn't contain"
+    phrase_prefix: "starts with"
+    not_phrase_prefix: "doesn't start with"
+    gt: "is greater than"
+    lt: "is less than"
+    gte: "is greater than or equal to"
+    lte: "is less than or equal to"
+    within: "is within"
+    not_within: "isn't within"
+    qs: "matches query"
+    not_qs: "doesn't match query"
+    any: "has any value"
+    missing: "is missing"

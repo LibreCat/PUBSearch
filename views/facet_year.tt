@@ -1,0 +1,7 @@
+<!-- BEGIN facet_doctype.tt -->
+<h2>Publishing Year</h2>
+[% FOREACH y IN facets.year.terms %] 
+<a href="/year/[% y.term %]">[% y.term %]</a> 
+	<a href="" >([% y.count %])</a> <br />
+[% END %]
+<!-- END facet_doctype.tt -->

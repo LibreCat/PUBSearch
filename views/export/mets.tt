@@ -1,0 +1,38 @@
+[%- USE XML::Strict -%]
+<mets:mets
+    xmlns:rights="http://www.loc.gov/rights/"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:lc="http://www.loc.gov/mets/profiles"
+    xmlns:bib="http://www.loc.gov/mets/profiles/bibRecord"
+    xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:mets="http://www.loc.gov/METS/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    OBJID="info:ugent-repo/biblio/$recordOId#html"
+    xsi:schemaLocation="
+        http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd
+        http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd"
+    PROFILE="lc:bibRecord">
+    <mets:dmdSec ID="DM1">
+        <mets:mdWrap MDTYPE="MODS" LABEL="[% mainTitle | xml_strict %]">
+            <mets:xmlData>
+                [% INCLUDE "export/mods.tt" %]
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+    [%- FOREACH f IN file %]
+        <mets:fileGrp USE="application">
+            <mets:file MIMETYPE="[% f.content_type | xml_strict %]" GROUPID="G1" ID="[% f._id | xml_strict %]">
+                <mets:FLocat LOCTYPE="URL" xlink:href="[% _config.uri_base %]/publication/[% _id | xml_strict %]/file/[% f._id | xml_strict %]"/>
+            </mets:file>
+        </mets:fileGrp>
+    [%- END %]
+    </mets:fileSec>
+    <mets:structMap>
+        <mets:div DMDID="DM1" TYPE="text" LABEL="[% mainTitle | xml_strict %]">
+        [%- IF file.first %]
+            <mets:fptr FILEID="[% file.first._id | xml_strict %]"/>
+        [%- END %]
+        </mets:div>
+    </mets:structMap>
+</mets:mets>

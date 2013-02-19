@@ -1,0 +1,33 @@
+<!-- BEGIN developer.tt -->
+
+[% INCLUDE header.tt %]
+
+<h1>PUB: Interface Documentation</h1>
+
+<h2>Publications</h2>
+<h3>Possible parameters for the style parameter</h3>
+[% FOREACH p IN lists.style %]
+<li> [% p %] </li>
+[% END %]
+
+<h3>Possible CQL parameters for publications</h3>
+[% cql_list= search.options.bags.publicationItem.cql_mapping.indexes %]
+[% FOREACH p IN cql_list.keys %]
+<li> [% p %] </li>
+[% END %]
+
+<h3>Possible export formats</h3>
+[% FOREACH p IN lists.export_format %]
+<li> [% p %] </li>
+[% END %]
+
+<h2>Projects</h2>
+<h3>Possible CQL parameters for projects</h3>
+[% cql_list= search.options.bags.project.cql_mapping.indexes %]
+[% FOREACH p IN cql_list.keys %]
+<li> [% p %] </li>
+[% END %]
+
+[% INCLUDE footer.tt %]
+
+<!-- END developer.tt -->

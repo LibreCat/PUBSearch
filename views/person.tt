@@ -1,0 +1,439 @@
+[% INCLUDE header.tt %]
+[% USE date(format => '%Y') %]
+
+<!-- BEGIN person.tt -->
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+
+<script src="/javascripts/bootstrap.min.js"></script>
+[% path = request.path %]
+[% id = path.search('person/(\d{1,})') %]
+[% thisPerson = h.getPerson(id) %]
+[% qp = request._query_params %]
+
+<div class="row" style="padding-top:270px;padding-left:27px;"><!-- outer border -->
+  
+  <div class="span8 offset1"> <!-- main content (left) -->
+    
+    <div class="row"> <!-- row span8 picture, email -->
+      <div class="span2">
+	[% bis = h.getBISData(id) %]
+	[% IF bis.photo %]
+        <img src="[% bis.photo %]" class="img-polaroid">
+	[% ELSE %]
+	<img src="/images/dummy.png" class="img-polaroid">
+	[% END %]
+      </div> <!-- span 2 -->
+  
+      <div class="span6">
+        <h5>[% IF bis.personTitle %][% bis.personTitle %][% END %] [% thisPerson.givenName %] [% thisPerson.surname %]</h5>
+        [% IF bis.email AND bis.forschend %]
+        <a href="mailto:[% bis.email %]">[% bis.email.replace('@|&#64;', ' [at] ') %]</a><br />
+        [% END %]
+	[% IF bis.former == '1' %]
+	  [% IF bis.nonExist == '1' %]
+	  <p>&nbsp;</p>
+	  <p>There is no person with this ID at Bielefeld University.</p>
+	  [% ELSE %]
+	  <p>Former Bielefeld University Researcher</p>
+	  [% END %]	  
+	[% ELSE %]
+	[% IF !bis.forschend %]
+	<p>This person is not listed as a researcher.</p>
+	[% END %]
+	View in <a href="http://ekvv.uni-bielefeld.de/pers_publ/publ/PersonDetail.jsp?personId=[% id %]&lang=en">Directory of Staff and Departments</a>
+	[% END %]
+      </div> <!-- span6 -->
+    </div> <!-- row span8 picture, email -->
+    
+    <div class="row"> <!-- empty row span8 -->
+      <div class="span8">&nbsp;</div>
+    </div> <!-- empty row span8 -->
+
+    <div class="row"> <!-- row span8 publications, projects, departments -->
+      <div class="span8">
+        [% IF bis.forschend AND total == "0" AND !qp.ftext %]
+        <p>The personal publication list is awaiting approval.</p>
+        [% ELSIF bis.forschend %]
+        <ul class="nav nav-tabs" id="myTab">
+          <li class="active"><a href="#publ">[% total %] Publications</a></li>
+          <div style="text-align:right;padding-top:10px;"><i><a class="mark-all" href="#">Mark all</a></i></div>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="publ">
+            [% INCLUDE hits_person.tt %]
+          </div>
+          
+          <div class="tab-pane" id="proj">
+            <div class="row">
+              <div class="span1"></div>
+              <div class="span7">
+                [% INCLUDE project/hitsProj.tt %]
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane" id="affil">
+            <div class="row">
+              <div class="span1"></div>
+              <div class="span7">
+                <ul class="unstyled">
+                  [% FOREACH affil IN thisPerson.affiliation %]
+                  <li>[% affil.name %]</li>
+                  [% END %]
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+        $('#myTab a').click(function (e) {
+          e.preventDefault();
+          $(this).tab('show');
+        })
+        </script>
+        [% END %]
+      </div> <!-- span 8 -->
+    </div> <!-- row span8 publications, projects, departments -->
+  </div> <!-- span8 main content -->
+
+
+  <div class="span3"> <!-- right menu -->
+  
+    <!-- login -->
+    <div class="dropdown">
+      <button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> Login to PUB <span class="caret"></span></button>
+      <div class="dropdown-menu" role="menu" style="padding:10px;">
+        <form method="post" action="[% h.shost %]/luur/session" class="form-horizontal">
+          <input type="hidden" name="func" value="login">
+          <div class="control-group">
+            <label for="inputEmail">Username:</label>
+            <input type="text" name="login" id="login" placeholder="Username" />
+          </div>
+          <div class="control-group">
+	        <label for="inputPassword">Password:</label>
+            <input type="password" name="password" id="password" placeholder="Password" /><br />
+          </div>
+          <div class="control-group">
+            <button type="submit" class="btn btn-primary">Sign in</button>
+          </div>
+        </form>
+      </div>
+      <script type="text/javascript">
+        $('.dropdown-menu input, .dropdown-menu label, dropdown-menu button').click(function(e) {
+          e.stopPropagation();
+        });
+      </script>
+    </div>
+
+    <div>&nbsp;</div>
+    
+    [% qp.style = style %]
+    <a href="[% h.newuri_for("/marked", qp, person="$id") %]">Your Marked Publications</a> <a class="total-marked label" href="[% h.newuri_for("/marked", qp, person="$id") %]">[% marked %]</a>
+    <div class="unmark_all">[% IF marked %]<a class="unmark-all" href="#">Unmark all</a>[% END %]</div>
+    
+    <div>&nbsp;</div>
+
+    
+    [% IF bis.forschend AND !bis.nonExist AND (total != "0" OR qp.ftext) %]
+    <!-- Search -->
+
+    <h5>Search Publications</h5>
+    [% USE Dumper %]
+    <!-- [% Dumper.dump(qp) %] -->
+    <form action="/person/[% id %]" method="get" class="form">
+      <div class="controls controls-row">
+        [% FOREACH key IN qp.keys %]
+        [% NEXT IF key == "ftext" %]
+        [% IF qp.$key.0 %]
+        [% FOREACH val in qp.$key %]
+        <input type="hidden" name="[% key %]" value="[% val %]" />
+        [% END %]
+        [% ELSE %]
+        <input type="hidden" name="[% key %]" value="[% qp.$key %]" />
+        [% END %]
+        [% END %]
+        <input type="text" value="[% qp.ftext %]" name="ftext" class="input span2" placeholder="Search" />
+        <button type="submit" class="btn span1">Go!</button>
+      </div>
+      [% IF qp.ftext %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, ftext="") %]"><i class="icon-trash"></i></a> Search: [% qp.ftext %]</p>
+      [% END %]
+    </form>
+    
+    
+    <!-- Filter -->
+    
+    <h5>Filter Publications</h5>
+
+    [% IF qp.keys.0 %]
+    <!--<p class="muted"><a href="[% request.path %]"><i class="icon-remove"></i></a> Remove all</p>-->
+    [% IF qp.publicationtype.0 OR qp.publicationtype %]
+    <p class="muted"><a href="[% h.newuri_for("$path", qp, publicationtype="") %]"><i class="icon-remove"></i></a> publicationtype: [% FOREACH filval IN qp.publicationtype %][% filval %], [% END %]</p>
+    [% END %]
+    [% IF qp.author.0 OR qp.author %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, author="") %]"><i class="icon-remove"></i></a> author: [% FOREACH filval IN qp.author %][% filval %], [% END %]</p>
+    [% END %]
+    [% IF qp.editor.0 OR qp.editor %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, editor="") %]"><i class="icon-remove"></i></a> editor: [% FOREACH filval IN qp.editor %][% filval %], [% END %]</p>
+    [% END %]
+    [% IF qp.person.0 OR qp.person %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, person="") %]"><i class="icon-remove"></i></a> person: [% FOREACH filval IN qp.person %][% filval %], [% END %]</p>
+    [% END %]
+    [% IF qp.publishingyear.0 OR qp.publishingyear %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, publishingyear="") %]"><i class="icon-remove"></i></a> publishingyear: [% FOREACH filval IN qp.publishingyear %][% filval %], [% END %]</p>
+    [% END %]
+    [% IF qp.popularscience.0 OR qp.popularscience %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, popularscience="") %]"><i class="icon-remove"></i></a> popularscience: [% FOREACH filval IN qp.popularscience %][% filval %], [% END %]</p>
+    [% END %]
+    [% IF qp.nonunibi %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, nonunibi="") %]"><i class="icon-remove"></i></a> nonunibi: 1</p>
+    [% END %]
+    [% IF qp.fulltext %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, fulltext="") %]"><i class="icon-remove"></i></a> fulltext: 1</p>
+    [% END %]
+    
+    [% END %]
+    
+    <ul class="nav nav-tabs nav-stacked">
+      [% IF dochits.facets.documentType.terms.0 %]
+      <li>
+        <a data-toggle="collapse" data-target="#documentType"><i class="icon-chevron-down"></i>&nbsp;Publication Type ([% dochits.facets.documentType.terms.size %])</a>           
+        <div class="facettecollapse">
+        <ul id="documentType" class="collapse[% IF qp.publicationtype %] in[% END %]">
+          [% FOREACH type IN dochits.facets.documentType.terms %]
+          [% typeName = h.display_doctypes(type.term) %]
+          [% IF qp.publicationtype.grep("^$type.term\$").0 %]
+          <li>[% typeName %] ([% type.count %])</li>
+          [% ELSE %]
+          <li><a href="[% h.newuri_for("$path", qp, publicationtype="$type.term") %]">[% typeName %] ([% type.count %])</a></li>
+          [% END %]
+          [% END %]
+        </ul>
+        </div>
+      </li>
+     [% END %]
+     [% IF facets.coAuthor.terms.0 %] 
+      <li>
+        <a data-toggle="collapse" data-target="#co_authors"><i class="icon-chevron-down"></i>&nbsp;Uni-Bi Co-authors ([% facets.coAuthor.terms.size %])</a>
+        <div class="facettecollapse">
+        <ul id="co_authors" class="collapse[% IF qp.author %] in[% END %]">
+          [% FOREACH co IN facets.coAuthor.terms %]
+          [% name = h.getPerson(co.term) %]
+          [% IF qp.author.grep("$co.term").0 %]
+          <li>[% name.fullName %] (<a href="/person/[% co.term %]">publication list</a>)</li>
+          [% ELSE %]
+	      <li><a href="[% h.newuri_for("$path", qp, author="$co.term") %]" >[% name.fullName %] ([% co.count %])</a></li>
+          [% END %]
+          [% END %]
+        </ul>
+        </div>
+      </li>
+      [% END %]
+      [% IF facets.coEditor.terms.0 %] 
+      <li>
+        <a data-toggle="collapse" data-target="#co_editors"><i class="icon-chevron-down"></i>&nbsp;Uni-Bi Co-editors ([% facets.coEditor.terms.size %])</a>
+        <div class="facettecollapse">
+        <ul id="co_editors" class="collapse[% IF qp.editor %] in[% END %]">
+          [% FOREACH co IN facets.coEditor.terms %]
+          [% name = h.getPerson(co.term) %]
+          [% IF qp.editor.grep("$co.term").0 %]
+          <li>[% name.fullName %] (<a href="/person/[% co.term %]">publication list</a>)</li>
+          [% ELSE %]
+	      <li><a href="[% h.newuri_for("$path", qp, editor="$co.term") %]" >[% name.fullName %] ([% co.count %])</a></li>
+          [% END %]
+          [% END %]
+        </ul>
+        </div>
+      </li>
+      [% END %]
+      [% IF yearhits.facets.year.terms.0 %]
+      <li>
+        <a data-target="#year" data-toggle="collapse"><i class="icon-chevron-down"></i>&nbsp;Publishing Year ([% yearhits.facets.year.terms.size %])</a>
+        <div class="facettecollapse">
+        <ul id="year" class="collapse[% IF qp.publishingyear %] in[% END %]">
+          [% FOREACH y IN yearhits.facets.year.terms %]
+          [%- year = (y.term) / 1000; -%]
+          [%- yf = date.format(year); -%]
+          [% IF qp.publishingyear.grep("^$yf\$").0 %]
+          <li>[% yf %] ([% y.count %])</li>
+          [% ELSE %]
+	      <li><a href="[% h.newuri_for("$path", qp, publishingyear="$yf") %]" >[% yf %] ([% y.count %])</a></li>
+          [% END %]
+          [% END %]
+        </ul>
+        </div>
+      </li>
+      [% END %]
+    </ul>
+    
+    <ul class="nav nav-tabs nav-stacked">
+      <!--
+      [% IF facets.qualityControlled.total %]
+      <li>
+        <a href="[% h.newuri_for("$path", qp, qualitycontrolled="1") %]"><i class="icon-chevron-right"></i>&nbsp;[% facets.qualityControlled.total %] Quality Controlled</a>
+      </li>
+      [% END %]
+      -->
+      
+      [% IF facets.popularScience.total %]
+      <li>
+        <a href="[% h.newuri_for("$path", qp, popularscience="1") %]"><i class="icon-chevron-right"></i>&nbsp;[% facets.popularScience.total %] Popular Science</a>
+      </li>
+      [% END %]
+      
+      [% IF facets.nonlu.total %]
+      <li>
+        <a href="[% h.newuri_for("$path", qp, nonunibi="1") %]"><i class="icon-chevron-right"></i>&nbsp;[% facets.nonlu.total %] External Publications</a>
+      </li>
+      [% END %]
+
+      <li>
+        [% FOREACH term IN facets.openAccess.terms %]
+          [% NEXT IF term.term == "0" %]
+          <a href="[% h.newuri_for("$path", qp, fulltext="1") %]"><i class="icon-chevron-right"></i>&nbsp;[% term.count %] OA Fulltexts</a>
+        [% END %]
+        <!--<a href="[% h.newuri_for("$path", qp, fulltext="1") %]"><i class="icon-chevron-right"></i>&nbsp;[% facets.openAccess.total %] OA Fulltexts</a>-->
+      </li>
+    </ul>
+
+    
+    <!-- Style / Sort -->
+    
+    <h5>Display &amp; Export Publications</h5>
+    
+    [% IF qp.keys.0 %]
+    [% IF qp.style AND qp.style != "frontShort" %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, style="frontShort") %]"><i class="icon-remove"></i></a> style: [% qp.style %]</p>
+    [% END %]
+    [% IF qp.item('sort').0 OR qp.defined('sort') %]
+      <p class="muted"><a href="[% h.newuri_for("$path", qp, sort="") %]"><i class="icon-remove"></i></a> sort: [% FOREACH filval IN qp.item('sort') %][% filval %], [% END %]</p>
+    [% END %]
+    [% END %]
+    
+    <ul class="nav nav-tabs nav-stacked">
+      <li>
+        <a data-toggle="collapse" data-target="#style"><i class="icon-chevron-down"></i>&nbsp;Citation Style[% IF style != "pub" AND style != "frontShort" AND style != "" %]: [% style %][% ELSIF style == "frontShort" %]: default[% END %]</a>
+        <div class="facettecollapse">
+        <ul id="style" class="collapse">
+          [% IF qp.style AND qp.style == "frontShort" %]
+          <li>default</li>
+          [% ELSE %]
+          <li><a href="[% h.newuri_for("$path", qp, style="frontShort") %]">default</a></li>
+          [% END %]
+          [% FOREACH dstyle IN h.display_styles %]
+            [% IF dstyle == style %]
+            <li>[% dstyle %]</li>
+            [% ELSE %]
+            <li><a href="[% h.newuri_for("$path", qp, style="$dstyle") %]">[% dstyle %]</a></li>
+            [% END %]
+          [% END %]
+        </ul>
+        </div>
+      </li>
+      <li>
+        <a data-toggle="collapse" data-target="#sort"><i class="icon-chevron-down"></i>&nbsp;Sorting</a>
+        <div class="facettecollapse">
+        <ul id="sort" class="collapse[% IF qp.defined('sort') %] in[% END %]">
+          [% FOREACH sorting IN h.config.store.sort_options %]
+            [% IF qp.sort.grep("$sorting.key").0 %]
+            <li>[% sorting.label %]</li>
+            [% ELSE %]
+              [% sortasc = sorting.key _ ".asc" %]
+              [% sortdesc = sorting.key _ ".desc" %]
+              <li><a href="[% h.newuri_for("$path", qp, sort="$sortasc") %]">[% sorting.label %]&nbsp;<i class="icon icon-arrow-up"></i></a>&nbsp;&nbsp;<a href="[% h.newuri_for("$path", qp, sort="$sortdesc") %]"><i class="icon icon-arrow-down"></i></a></li>
+            [% END %]
+          [% END %]
+        </ul>
+        </div>
+      </li>
+    </ul>
+    
+    <ul class="nav nav-tabs nav-stacked">
+      <li>
+        <a data-toggle="collapse" data-target="#export"><i class="icon-chevron-down"></i>&nbsp;Export as</a>
+        <div class="facettecollapse">
+        <ul id="export" class="collapse">
+          <li><a href="[% h.newuri_for("$path", qp, fmt="rtf") %]"><i class="icon-share"></i> RTF (e.g. Word, Office)</a></li>
+          <li><a href="[% h.newuri_for("$path", qp, fmt="bibtex") %]"><i class="icon-share"></i> BibTeX</a></li>
+          <li><a href="[% h.newuri_for("$path", qp, fmt="ris") %]"><i class="icon-share"></i> RIS</a></li>
+          <li><a href="[% h.newuri_for("$path", qp, fmt="json") %]"><i class="icon-share"></i> JSON</a></li>
+          <li><a href="[% h.newuri_for("$path", qp, fmt="yaml") %]"><i class="icon-share"></i> YAML</a></li>
+        </ul>
+        </div>
+      </li>
+      <li>
+        <a data-toggle="collapse" data-target="#embed"><i class="icon-chevron-down"></i>&nbsp;Embed as</a>
+        <div class="facettecollapse">
+        <ul id="embed" class="collapse">
+          [% IF embedstrings.js %]
+          <li><i class="icon-download"></i> <strong>javaScript</strong>
+          <textarea class="input-block-level" name="jstext" rows="2" id="id_jstext" onclick="this.focus();this.select()" readonly="readonly">[% embedstrings.js %]</textarea>
+          </li>
+          [% END %]
+          [% IF embedstrings.modjs %]
+          <li><i class="icon-download"></i> <strong>javaScript (modified list)</strong>
+          <textarea class="input-block-level" name="jstext" rows="2" id="id_jstext" onclick="this.focus();this.select()" readonly="readonly">[% embedstrings.modjs %]</textarea>
+          </li>
+          [% END %]
+          [% IF embedstrings.iframe %]
+          <li><i class="icon-download"></i> <strong>iFrame</strong>
+          <textarea class="input-block-level" name="jstext" rows="2" id="id_jstext" onclick="this.focus();this.select()" readonly="readonly">[% embedstrings.iframe %]</textarea>
+          </li>
+          [% END %]
+          [% IF embedstrings.modiframe %]
+          <li><i class="icon-download"></i> <strong>iFrame (modified list)</strong>
+          <textarea class="input-block-level" name="jstext" rows="2" id="id_jstext" onclick="this.focus();this.select()" readonly="readonly">[% embedstrings.modiframe %]</textarea>
+          </li>
+          [% END %]
+          [% IF embedstrings.item('link') %]
+          <li><i class="icon-download"></i> <strong>Link</strong>
+          <textarea class="input-block-level" name="jstext" rows="2" id="id_jstext" onclick="this.focus();this.select()" readonly="readonly">[% embedstrings.item('link') %]</textarea>
+          </li>
+          [% END %]
+          [% IF embedstrings.modlink %]
+          <li><i class="icon-download"></i> <strong>Link (modified list)</strong>
+          <textarea class="input-block-level" name="jstext" rows="2" id="id_jstext" onclick="this.focus();this.select()" readonly="readonly">[% embedstrings.modlink %]</textarea>
+          </li>
+          [% END %]
+        </ul>
+        </div>
+      </li>
+    </ul>
+    [% END %]
+    
+    <!-- powered by -->
+    
+    <h5>Powered by<h5>
+	<a href="[% h.host %]"><img src="/images/pub.jpeg" width="210px" class="img-polaroid"/></a>
+	<br />
+	<br />
+	<a href="http://www.uni-bielefeld.de/bis/"><img src="/images/logo_bis_gruen.png" width="210px" class="img-polaroid"/></a>
+  </div> <!-- span3 right menu -->
+
+</div><!-- row outer border -->
+
+<script type="text/javascript" charset="utf-8">
+$('a.mark-all').click(function(evt) {
+  evt.preventDefault();
+  $.post('[% h.newuri_for("/marked", qp, id="$id") %]', function(res) {
+      if (res.message) {
+        showAlertMessage(res.ok ? 'info' : 'warning', res.message);
+      }
+      $('a.mark').data('marked', 1).text('Unmark');
+      $('.total-marked').text(res.total);
+    }, 'json');
+});
+
+$('a.unmark-all').click(function(evt) {
+  evt.preventDefault();
+  $.post('[% h.host %]/marked?x-tunneled-method=DELETE', function(res) {
+    window.location.reload();
+  }, 'json');
+});
+</script>
+
+<!-- END person.tt -->
+
+[% INCLUDE footer.tt %]
+
+</body>
+</html>

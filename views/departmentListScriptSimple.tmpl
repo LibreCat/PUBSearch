@@ -1,0 +1,12 @@
+<script>
+$(function() {
+    $( "#tags" ).autocomplete({
+    	source: "[% h.host %]/luur/authority_organization?func=getOrganizationsJson",
+    	minLength: 2,
+    	select: function( event, ui ) {
+    		$( "#tags" ).val( ui.item.label );
+    		$( "#tagsid" ).val( ui.item.id );
+    	}
+    });
+});
+</script>

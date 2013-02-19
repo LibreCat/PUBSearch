@@ -1,0 +1,5 @@
+<!-- BEGIN facet_oa.tt -->
+
+<h2>Open access fulltexts</h2>
+<a href="/[% request.path %]">[% facets.openAccess.total %]</a>
+<!-- END facet_oa.tt -->

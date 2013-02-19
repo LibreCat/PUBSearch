@@ -1,0 +1,19 @@
+<!-- BEGIN links. tt --> 
+	<a href="[% h.host %]/publication/[% entry.oId %]" title="Show complete bibliographic and access information" target="_blank">PUB</a>
+	[% FOREACH file IN entry.file %]
+	[% IF file.openAccess == 1 %]
+	 | <a href="[% h.host %]/download/[% entry.oId %]/[% file.fileOId %]" title="[% file.fileName %]" target="_blank">
+	[% SWITCH file.contentType %] 
+		[% CASE 'application/pdf' %]
+	 	PDF
+		[% CASE 'application/ps' %]
+	 	PS
+	[% END %]</a>[% END %][% END %]	
+	[% FOREACH supp IN entry.relatedMaterial %] | <a href="[% supp.link.url %]" title="[% supp.link.linkTitle %]">Suppl. Material</a>[% END %]
+	[% IF entry.link %] | <a href="[% entry.link.url %]">URL</a>[% END %]
+	[% IF entry.doi %] | <a href="http://dx.doi.org/[% entry.doi %]" title="[% entry.doi %]" target="_blank">DOI</a>[% ELSIF entry.doiInfo %]| <a href="http://dx.doi.org/[% entry.doiInfo.doi %]" target="_blank">DOI</a>[% END %]
+	[% IF entry.pubmedID %] | <a href="http://www.ncbi.nlm.nih.gov/pubmed/[% entry.pubmedID %]" target="_blank">PubMed</a> | <a href="http://europepmc.org/abstract/MED/[% entry.pubmedID %]">Europe PMC</a>
+	[% ELSIF entry.medline %] | <a href="http://www.ncbi.nlm.nih.gov/pubmed/[% entry.medline %]" target="_blank">PubMed</a> | <a href="http://europepmc.org/abstract/MED/[% entry.medline %]">Europe PMC</a>[% END %]
+	[% IF entry.arxiv %] | <a href="http://arxiv.org/abs/[% entry.arxiv %]" target="_blank">arXiv</a>[% END %]
+	[% IF entry.inspire %] | <a href="http://inspirebeta.net/record/[% entry.inspire %]" target="_blank">Inspire</a>[% END %]
+<!-- END links. tt --> 

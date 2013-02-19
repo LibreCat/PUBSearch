@@ -1,0 +1,28 @@
+<!-- Citations in this list are displayed in "[% style %]" style. -->
+
+<h2>THIS is OA</h2>
+
+<h2>[% request.path %]</h2>
+<h2>Total hits: [% total %]</h2>
+<div>Export:
+[% INCLUDE filter_export.tt %]
+</div>
+
+<div> Limit hits:
+[% INCLUDE filter_limit.tt %]
+</div>
+<div> Filter by type:
+[% INCLUDE filter_doctype.tt %]
+</div>
+<div> Filter by year:
+[% INCLUDE filter_year.tt %]
+</div>
+
+<ul>
+[% FOREACH entry IN hits %]
+  <li>
+	[% entry.citations.$style %]<br />
+	[% INCLUDE links.tt %]
+  </li>
+[% END %]
+</ul>

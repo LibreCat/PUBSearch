@@ -1,0 +1,34 @@
+</div>
+
+<div id="fussstrich"> </div>
+
+<div id="fussmenu">
+<ul>
+<li><span class="footer">&copy; 2012 <a href="http://www.ub.uni-bielefeld.de/english/" target="_blank">Bielefeld University Library</a> | Software developed by <a href="http://www.lub.lu.se/en.html" target="_blank">Lund University Libraries</a>, <a href="http://lib.ugent.be/en">Ghent University Library</a> and Bielefeld University Library | PUB is supported by the <a href="http://www.dfg.de/">DFG</a></span></li>
+<li class="screen"><a href="http://www.ub.uni-bielefeld.de/biblio/kontakt/impressum/" target="Imprint" onclick="window.open(this.href,'Imprint','width=650,height=650,left=250,top=30,directories=no,toolbar=no,location=no,menubar=no,status=no,scrollbars=yes,resizable=yes')" class="footer">Legal Notice</a></li>
+</ul>
+</div>
+
+</div>
+
+<div id="menubereich">
+<div id="menulinks">
+<h1 class="underline"><img height="18" width="77" src="http://www.uni-bielefeld.de/_internal/graphic_text!0/escp455v9j6$amoiocgy" style="border: none;" alt="Navigation " /> </h1>
+
+<ul class="menu-left">
+<li><a href="/(en)/index.html">PUB Home</a></li>
+<li><a href="/(en)/demo/index.html">Embed Publication Lists</a></li>
+<li><a href="/(en)/faq.html">FAQ</a></li>
+<li style="margin-top:25px;"><a href="/search" class="active">Search</a></li>
+<li><a href="/(en)/puboa/index.html">PUB OA</a></li>
+<li><a href="/(en)/pubtheses/index.html">PUB Theses</a></li>
+<li style="margin-top:25px;"><a href="https://blogfarm.uni-bielefeld.de/pub/">PUB Blog</a></li>
+<li style="margin-top:25px;"><a href="/workshop/index.html">PubLister Symposium and Workshop</a></li>
+</ul>
+
+</div>
+</div>
+
+</body>
+
+</html>

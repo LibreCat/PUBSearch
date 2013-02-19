@@ -1,0 +1,151 @@
+[% INCLUDE header.tt %]
+[% USE date(format => '%Y') %]
+[% style = request._query_params.style %]
+[% id = request._query_params.person %]
+[% path = request.path %]
+[% qp = request._query_params %]
+
+<!-- BEGIN marked.tt -->
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script>
+  $(function() {
+    $( "#sortable" ).sortable({
+      update: function(event, ui) {
+          $.post('[% h.host %]/reorder/' + ui.item.find('span.pubid').text() + '/' + ui.item.index(), function(){},'json');
+      }
+    });
+    $( "#sortable" ).disableSelection();
+  });
+</script>
+
+[% thisPerson = h.getPerson(id) %]
+<div class="row" style="padding-top:270px;padding-left:27px;"><!-- outer border -->
+  
+  <div class="span8 offset1"> <!-- main content (left) -->
+    
+    <ul class="nav nav-tabs" id="myTab">
+      <li class="active"><a href="#publ">[% total %] Marked Publications</a></li>
+      <div style="text-align:right;padding-top:10px;"><a href="javascript:location.reload();"><i class="icon icon-refresh"></i> Refresh page</a></div>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="publ">
+        [% IF total %]
+        [% INCLUDE hits_person.tt %]
+        [% ELSE %]
+        You have not marked any publications.<br />
+        <a href="[% h.newuri_for("/person/$id", qp, person="") %]">Back to person page.</a>
+        [% END %]
+      </div>
+    </div>
+  </div> <!-- span8 main content -->
+
+
+  <div class="span3"> <!-- right menu -->
+  
+    <!-- login -->
+    <div class="dropdown">
+      <button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> Login to PUB <span class="caret"></span></button>
+      <div class="dropdown-menu" role="menu" style="padding:10px;">
+        <form method="post" action="[% h.shost %]/luur/session" class="form-horizontal">
+          <input type="hidden" name="func" value="login">
+          <div class="control-group">
+            <label for="inputEmail">Username:</label>
+            <input type="text" name="login" id="login" placeholder="Username" />
+          </div>
+          <div class="control-group">
+	        <label for="inputPassword">Password:</label>
+            <input type="password" name="password" id="password" placeholder="Password" /><br />
+          </div>
+          <div class="control-group">
+            <button type="submit" class="btn btn-primary">Sign in</button>
+          </div>
+        </form>
+      </div>
+      <script type="text/javascript">
+        $('.dropdown-menu input, .dropdown-menu label, dropdown-menu button').click(function(e) {
+          e.stopPropagation();
+        });
+      </script>
+    </div>
+    
+    
+    <div class="row"> <!-- empty row span3 -->
+      <div class="span3">&nbsp;</div>
+    </div> <!-- empty row span3 -->
+    
+    <!-- Filter -->
+    [% path = request.path %]
+    
+    <ul class="nav nav-tabs nav-stacked">
+      <li>
+        <a data-toggle="collapse" data-target="#style"><i class="icon-chevron-down"></i>&nbsp;Citation Style[% IF style != "pub" AND style != "frontShort" AND style != "" %]: [% style %][% ELSIF style == "frontShort" %]: default[% END %]</a>
+        <div style="border-left:1px solid lightgray;border-right:1px solid lightgray;">
+        <ul id="style" class="collapse">
+          [% IF qp.style AND qp.style == "frontShort" %]
+          <li>default</li>
+          [% ELSE %]
+          <li><a href="[% h.newuri_for("$path", qp, style="frontShort") %]">default</a></li>
+          [% END %]
+          [% FOREACH dstyle IN h.display_styles %]
+            [% IF dstyle == style %]
+            <li>[% dstyle %]</li>
+            [% ELSE %]
+            <li><a href="[% h.newuri_for("$path", qp, style="$dstyle") %]">[% dstyle %]</a></li>
+            [% END %]
+          [% END %]
+        </ul>
+        </div>
+      </li>
+      <li>
+        <a data-toggle="collapse" data-target="#export"><i class="icon-chevron-down"></i>&nbsp;Export as</a>
+        <div style="border-left:1px solid lightgray;border-right:1px solid lightgray;">
+        <ul id="export" class="collapse">
+          <li><a href="[% h.newuri_for("$path", qp, fmt="rtf") %]"><i class="icon-download"></i> RTF (e.g. Word, Office)</a></li>
+          <li><a href="[% h.newuri_for("$path", qp, fmt="bibtex") %]"><i class="icon-download"></i> BibTeX</a></li>
+          <li><a href="[% h.newuri_for("$path", qp, fmt="ris") %]"><i class="icon-download"></i> RIS</a></li>
+          <li><a href="[% h.newuri_for("$path", qp, fmt="json") %]"><i class="icon-download"></i> JSON</a></li>
+          <li><a href="[% h.newuri_for("$path", qp, fmt="yaml") %]"><i class="icon-download"></i> YAML</a></li>
+        </ul>
+        
+        </div>
+      </li>
+    </ul>
+    
+    <ul class="nav nav-tabs nav-stacked">
+      <li>
+        <a class="unmark-all" href="#">Unmark all</a>
+      </li>
+      <li>
+        <a href="[% h.newuri_for("/person/$id", qp, person="") %]">Back to previous page</a>
+      </li>
+    </ul>
+    
+    <h5>Powered by<h5>
+	<a href="[% h.host %]"><img src="/images/pub.jpeg" width="210px" class="img-polaroid"/></a>
+	<br />
+	<br />
+	<a href="http://www.uni-bielefeld.de/bis/"><img src="/images/logo_bis_gruen.png" width="210px" class="img-polaroid"/></a>
+  </div> <!-- span3 right menu -->
+
+</div><!-- row outer border -->
+
+<script type="text/javascript" charset="utf-8">
+$('a.unmark-all').click(function(evt) {
+  prev = "[% h.newuri_for("/person/$id", qp, person="") %]";
+  evt.preventDefault();
+  $.post('[% h.host %]/marked?x-tunneled-method=DELETE', function(res) {
+    window.location.replace(prev);
+  }, 'json');
+});
+</script>
+
+<!-- END person.tt -->
+
+[% INCLUDE footer.tt %]
+
+</body>
+</html>

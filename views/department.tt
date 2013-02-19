@@ -1,0 +1,206 @@
+[% INCLUDE header.tt %]
+[% USE date(format => '%Y') %]
+[% id = 10028 %]
+<!-- BEGIN department.tt -->
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+[% thisPerson = h.getPerson(id) %]
+<div class="row" style="padding-top:270px;padding-left:27px;"><!-- outer border -->
+  
+  <div class="span8 offset1"> <!-- main content (left) -->
+    <ul class="breadcrumb">
+      <li><a href="[% h.host %]">PUB</a> <span class="divider">/</span></li>
+      <li><a href="[% h.host %]/department/[% id %]">Publications of Faculty of Physics</a> <span class="divider">/</span></li>
+      [% IF breadcrumb %]
+        [% FOREACH crumb IN breadcrumb %]
+          <li>[% crumb %]</li>
+        [% END %]
+      [% END %]
+    </ul>
+    
+    <div class="row"> <!-- row span8 picture, email -->
+      <div class="span2">
+      <!--  <img src="http://ekvv.uni-bielefeld.de/pers_publ/download/m/s/b/36080374/Skaliert_86212.jpeg" class="img-polaroid"> -->
+         <img src="/images/[% id %].jpg" class="img-polaroid">
+      </div> <!-- span 2 -->
+  
+      <div class="span6">
+        <h5>Faculty of Physics</h5>
+        <a href="http://www2.physik.uni-bielefeld.de/542.html?&L=1">Homepage Faculty of Physics</a>
+      </div> <!-- span6 -->
+    </div> <!-- row span8 picture, email -->
+    
+    <div class="row"> <!-- empty row span8 -->
+      <div class="span8">&nbsp;</div>
+    </div> <!-- empty row span8 -->
+
+    <div class="row"> <!-- row span8 publications, projects, departments -->
+      <div class="span8">
+        <ul class="nav nav-tabs" id="myTab">
+          <li class="active"><a href="#publ">[% total %] Publications</a></li>
+          <li><a href="#proj">Projects</a></li>
+          <li><a href="#affil">Research Data</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="publ">
+	    [% INCLUDE pagination_dep.tt %]
+            [% INCLUDE hits_person.tt %]
+          </div>
+          
+          <div class="tab-pane" id="proj">
+            <div class="row">
+              <div class="span1"></div>
+              <div class="span7">
+                Coming soon
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane" id="affil">
+            <div class="row">
+              <div class="span1"></div>
+              <div class="span7">
+                <ul class="unstyled">
+                  [% FOREACH affil IN thisPerson.affiliation %]
+                  <li>[% affil.name %]</li>
+                  [% END %]
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+        $('#myTab a').click(function (e) {
+          e.preventDefault();
+          $(this).tab('show');
+        })
+        </script>
+      </div> <!-- span 8 -->
+    </div> <!-- row span8 publications, projects, departments -->
+  </div> <!-- span8 main content -->
+
+
+  <div class="span3"> <!-- right menu -->
+  
+    <!-- login -->
+    <div class="dropdown">
+      <button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> Login <span class="caret"></span></button>
+      <div class="dropdown-menu" role="menu" style="padding:10px;">
+        <form method="post" action="[% h.shost %]/luur/session" class="form-horizontal">
+          <input type="hidden" name="func" value="login">
+          <div class="control-group">
+            <label for="inputEmail">Username:</label>
+            <input type="text" name="login" id="login" placeholder="Username" />
+          </div>
+          <div class="control-group">
+	        <label for="inputPassword">Password:</label>
+            <input type="password" name="password" id="password" placeholder="Password" /><br />
+          </div>
+          <div class="control-group">
+            <button type="submit" class="btn btn-primary">Sign in</button>
+          </div>
+        </form>
+      </div>
+      <script type="text/javascript">
+        $('.dropdown-menu input, .dropdown-menu label, dropdown-menu button').click(function(e) {
+          e.stopPropagation();
+        });
+      </script>
+    </div>
+    
+    
+    <div class="row"> <!-- empty row span3 -->
+      <div class="span3">&nbsp;</div>
+    </div> <!-- empty row span3 -->
+    
+    <a href="[% h.host %]/marked">Marked list</a> <a class="total-marked label" href="[% h.host %]/mark"></a>
+    
+    <!-- Filter -->
+    [% path = request.path %]
+    [% thisPerson = h.getPerson(id) %]
+    <h4>Filter</h4>
+    <form class="form">
+      <div class="controls controls-row">
+        <input type="text" class="input span2" placeholder="Search" />
+        <button type="submit" class="btn span1">Go!</button>
+      </div>
+    </form>
+
+    [% IF !q.match('person=') %]<a href="[% request.path %]">Remove all filters</a>[% END %]
+    <ul class="nav nav-tabs nav-stacked">
+      [% IF facets.documentType.terms.0 %]
+      <li>
+        <a data-toggle="collapse" data-target="#documentType"><i class="icon-chevron-down"></i>&nbsp;Publication Type</a>           
+        <div style="border-left:1px solid lightgray;border-right:1px solid lightgray;">
+        <ul id="documentType" class="collapse">
+          [% FOREACH type IN facets.documentType.terms %]
+          [% typeName = h.display_doctypes(type.term) %]
+          <li><a href="[% h.uri_for("$path", documenttype="$type.term") %]">[% typeName %] ([% type.count %])</a></li>
+          [% END %]
+        </ul>
+        </div>
+      </li>
+     [% END %]
+     [% IF facets.author.terms.0 %] 
+      <li>
+        <a data-toggle="collapse" data-target="#co_authors"><i class="icon-chevron-down"></i>&nbsp;Co-authors</i></a>
+        <div style="border-left:1px solid lightgray;border-right:1px solid lightgray;">
+        <ul id="co_authors" class="collapse">
+          [% FOREACH au IN facets.author.terms %]
+          [% name = h.getPerson(au.term) %]
+	      <li><a href="[% h.uri_for("$path", person="$au.term") %]" >[% name.fullName %] ([% au.count %])</a></li>
+          [% END %]
+        </ul>
+        </div>
+      </li>
+      [% END %]
+      [% IF facets.year.terms.0 %]
+      <li>
+        <a data-toggle="collapse" data-target="#year"><i class="icon-chevron-down"></i>&nbsp;Publishing Year</i></a>
+        <div style="border-left:1px solid lightgray;border-right:1px solid lightgray;">
+        <ul id="year" class="collapse">
+          [% FOREACH y IN facets.year.terms %]
+          [%- year = (y.term) / 1000; -%]
+          [%- yf = date.format(year); -%]
+	      <li><a href="[% h.uri_for("$path", publishingyear="$yf") %]" >[% yf %] ([% y.count %])</a></li>
+          [% END %]
+        </ul>
+        </div>
+      </li>
+    [% END %]
+    </ul>
+    
+    <ul class="nav nav-tabs nav-stacked">
+      <li>
+        <a href="[% h.uri_for("$path", qualitycontrolled="1") %]"><i class="icon-chevron-right"></i>&nbsp;[% facets.qualityControlled.total %] Peer-reviewed</a>
+      </li>
+      
+      <li>
+        <a href="[% h.uri_for("$path", fulltext="1") %]"><i class="icon-chevron-right"></i>&nbsp;[% facets.openAccess.total %] OA Fulltexts</a>
+      </li>
+    </ul>
+    
+    <ul class="nav nav-tabs nav-stacked">
+      <li>
+        <a data-toggle="collapse" data-target="#export"><i class="icon-chevron-down"></i>&nbsp;Export as</a>
+        <div style="border-left:1px solid lightgray;border-right:1px solid lightgray;">
+        <ul id="export" class="collapse">
+          <li><a href="[% h.uri_for('/publication', q="department=$id",fmt="bibtex") %]"><i class="icon-download"></i> BibTeX</a></li>
+          <li><a href="[% h.uri_for('/publication', q="department=$id",fmt="ris") %]"><i class="icon-download"></i> RIS</a></li>
+          <li><a href="[% h.uri_for('/publication', q="department=$id",fmt="json") %]"><i class="icon-download"></i> JSON</i></a></li>
+          <li><a href="[% h.uri_for('/publication', q="department=$id",fmt="yaml") %]"><i class="icon-download"></i> YAML</i></a></li>
+        </ul>
+        </div>
+      </li>
+    </ul>
+  </div> <!-- span3 right menu -->
+
+</div><!-- row outer border -->
+
+<!-- END department.tt -->
+
+<div id="fussstrich" style="clear:both;"></div>
+[% INCLUDE footer.tt %]
+
+</body>
+</html>

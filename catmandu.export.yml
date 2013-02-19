@@ -1,0 +1,161 @@
+data:
+  csv:
+    package: CSV
+    options:
+      fix:
+        - publication_to_csv()
+      fields: &fields
+        - mainTitle
+        - author
+        - publication
+        - volume
+        - issue
+        - externalIdentifier
+
+  xls:
+    package: XLS 
+    options:
+      fix:
+        - publication_to_csv()
+      fields: *fields
+
+publication:
+  json:
+    package: 'JSON'
+    content_type: 'application/json'
+    options:
+      fix:
+        - publication_to_public()
+    label: JSON
+  yaml:
+    package: 'YAML'
+    content_type: 'text/x-yaml'
+    options:
+      fix:
+        - publication_to_public()
+    label: YAML
+  bibtex:
+    package: 'BibTeX'
+    content_type: 'text/x-bibtex'
+    options:
+      fix:
+        - publication_to_bibtex()
+    extension: bib
+    label: BibTeX
+  ris:
+    package: 'RIS'
+    content_type: 'application/x-research-info-systems'
+    options:
+      fix:
+        - publication_to_ris()
+    label: 'RIS (reference software)'
+  csv:
+    package: 'CSV'
+    content_type: 'text/csv'
+    options:
+      fix:
+        - publication_to_public()
+#      fields: *fields
+    label: 'CSV'
+  txt:
+    package: 'Text'
+    content_type: 'text/plain'
+    label: 'Text'
+  xls:
+    package: 'XLS'
+    content_type: 'application/vnd.ms-excel'
+    options:
+      fields: *fields
+      fix:
+        - publication_to_csv()
+    label: Excel
+#  doc:
+#    package: Word
+#    content_type: application/msword
+#    extension: doc
+#    label: Word
+#    user_options:
+#      - param: style
+  rtf:
+    package: RTF
+    content_type: application/rtf
+    extension: rtf
+    label: Rtf
+  rdf:
+    package: 'Template'
+    content_type: 'application/rdf+xml'
+    options:
+      template: export/rdf.tt
+      xml: true
+    extension: rdf
+    label: RDF
+  mods:
+    package: 'Template'
+    content_type: application/xml
+    options:
+      template: export/mods.tt
+      xml: true
+    extension: xml
+    label: MODS
+  dc:
+    package: 'Template'
+    content_type: application/xml
+    options:
+      template: export/oai_dc.tt
+      xml: true
+      fix:
+        - publication_to_dc()
+    extension: xml
+    label: Dublin Core
+
+publication_hits:
+  json:
+    package: 'JSON'
+    content_type: 'application/json'
+    options:
+      fix:
+        - publication_to_public()
+  yaml:
+    package: 'YAML'
+    content_type: 'text/x-yaml'
+    options:
+      fix:
+        - publication_to_public()
+  bibtex:
+    package: 'BibTeX'
+    content_type: 'text/x-bibtex'
+    options:
+      fix:
+        - publication_to_bibtex()
+    extension: bib
+  ris:
+    package: 'RIS'
+    content_type: 'application/x-research-info-systems'
+    options:
+      fix:
+        - publication_to_ris()
+  csv:
+    package: 'CSV'
+    content_type: 'text/csv'
+    options:
+      fields: *fields
+      fix:
+        - publication_to_csv()
+  xls:
+    package: 'XLS'
+    content_type: 'application/vnd.ms-excel'
+    options:
+      fields: *fields
+      fix:
+        - publication_to_csv()
+  mods:
+    package: 'Template'
+    options:
+      template_before: export/_mods_collection_before.tt
+      template: export/mods_collection.tt
+      template_after: export/_mods_collection_after.tt
+      xml: true
+    content_type: application/xml
+    extension: xml
+    label: MODS
+

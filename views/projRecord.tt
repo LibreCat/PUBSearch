@@ -1,0 +1,258 @@
+[% INCLUDE header.tt %]
+
+<!-- BEGIN projRecord.tt -->
+
+<div id="contentwide">
+
+<div id="contenthauptspaltelang" class="LeftIndent">
+
+[% IF name %]
+<div id="LeftCol">
+
+<div id="ProjectInfo">
+
+<h1>[% name %]</h1>
+
+[% IF alternativeName %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Alternative Name
+</div>
+<div class="frontdoor_right">
+[% alternativeName %]
+</div>
+</div>
+[% END %]
+
+[% IF acronym %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Acronym
+</div>
+<div class="frontdoor_right">
+[% acronym %]
+</div>
+</div>
+[% END %]
+
+[% IF isOwnedBy %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Coordinator
+</div>
+<div class="frontdoor_right">
+[% FOREACH coord IN isOwnedBy %]
+[% IF coord.name.personTitle != "" %]
+[% coord.name.personTitle %] 
+[% END %]
+[% coord.name.givenName %] [% coord.name.surname %]
+[% END %]
+</div>
+</div>
+[% END %]
+
+[% IF principalInvestigators %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Principal Investigators
+</div>
+<div class="frontdoor_right">
+[% FOREACH pi IN principalInvestigators %]
+[% IF pi.name.personTitle != "" %]
+[% pi.name.personTitle %] 
+[% END %]
+[% pi.name.givenName %] [% pi.name.surname %],  
+[% END %]
+</div>
+</div>
+[% END %]
+
+[% IF projectMembers %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Project Members
+</div>
+<div class="frontdoor_right">
+[% FOREACH pm IN projectMembers %]
+[% IF pm.name.personTitle != "" %]
+[% pm.name.personTitle %] 
+[% END %]
+[% pm.name.givenName %] [% pm.name.surname %], 
+[% END %]
+</div>
+</div>
+[% END %]
+
+[% IF isOwnedByDepartment %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Department(s)
+</div>
+<div class="frontdoor_right">
+[% FOREACH aff_entry IN isOwnedByDepartment %]
+[% aff_entry.name %]<br />
+[% END %]
+</div>
+</div>
+[% END %]
+
+[% IF description %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Description
+</div>
+<div class="frontdoor_right">
+[% FOREACH description_entry IN description %]
+[% UNLESS loop.first %]
+<br /><br />
+[% END %]
+[% description_entry %]
+[% END %]
+</div>
+</div>
+[% END %]
+
+[% IF grantNumber %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Grant Number
+</div>
+<div class="frontdoor_right">
+[% grantNumber %]
+</div>
+</div>
+[% END %]
+
+<div class="frontdoor">
+<div class="frontdoor_left">
+Ext. funded
+</div>
+<div class="frontdoor_right">
+[% IF isFunded %]
+yes
+[% ELSE %]
+no
+[% END %]
+</div>
+</div>
+
+[% IF projectFunders %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Funders
+</div>
+<div class="frontdoor_right">
+[% FOREACH funder IN projectFunders %]
+[% funder %]
+[% UNLESS loop.last %]
+<br />
+[% END %]
+[% END %]
+</div>
+</div>
+[% END %]
+
+[% IF projectCooperators %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Cooperators
+</div>
+<div class="frontdoor_right">
+[% FOREACH coop IN projectCooperators %]
+[% coop %]
+[% UNLESS loop.last %]
+<br />
+[% END %]
+[% END %]
+</div>
+</div>
+[% END %]
+
+[% IF startYear OR endYear %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+Project period
+</div>
+<div class="frontdoor_right">
+Start: [% startYear %]<br />
+End: [% endYear %]<br />
+</div>
+</div>
+[% END %]
+
+<div class="frontdoor">
+<div class="frontdoor_left">
+Active
+</div>
+<div class="frontdoor_right">
+[% IF isActive %]
+yes
+[% ELSE %]
+no
+[% END %]
+</div>
+</div>
+
+<div class="frontdoor">
+<div class="frontdoor_left">
+Global project
+</div>
+<div class="frontdoor_right">
+[% IF isGlobal %]
+yes
+[% ELSE %]
+no
+[% END %]
+</div>
+</div>
+
+[% IF url %]
+<div class="frontdoor">
+<div class="frontdoor_left">
+URL
+</div>
+<div class="frontdoor_right">
+<a href="[% url %]" target="_blank">[% url %]</a>
+</div>
+</div>
+[% END %]
+
+
+</div>
+
+[% IF hits %]
+<div id="ProjectHitlist">
+<h1>Aktuelle Publikationen des Projektes</h1>
+[% INCLUDE hits.tt %]
+</div>
+[% END %]
+<!--
+[% allData %]
+-->
+
+</div>
+</div>
+
+<div id="RightCol">
+<h1 class="underline">Edit</h1>
+<p><a href="javascript:openWdw('/luur/authority_project?func=editProject&projectOId=[% sbcatId %]','785','600','200','200','rec.windowName')">Edit Record &raquo;</a></p>
+</div>
+
+[% ELSE %]
+<p><strong>Project number not found</strong></p>
+
+<p><a href="/search">Search projects</a> - <a href="/project">List of all projects</a></p>
+</div>
+[% END %]
+
+<div id="fussstrich" style="clear:both;"></div>
+
+[%  INCLUDE footer.tt %]
+
+</div>
+
+</body>
+
+<!-- END projRecord.tt -->
+
+</html>

@@ -1,0 +1,55 @@
+[% INCLUDE header_search.tt %]
+
+<!-- BEGIN projList.tt -->
+
+[% IF total == 1 %]
+<h3>Search Result - [% total %] Project</h3>
+[% ELSIF total or total==0 %]
+<h3>Search Result - [% total %] Projects</h3>
+[% END %]
+
+<span id="innerContent">
+[% IF total and total != "0" %]
+<span style="display:none;">[% total %]</span>
+
+[% INCLUDE paginationProj.tt %]
+
+<ul class="hitlist">
+[% FOREACH project IN hits %]
+<li><a href="[% h.host %]/project/[% project._id %]">[% project.acronym %] [% project.name %]</a><br />
+<strong>Project period:</strong>
+[% IF project.startYear AND project.endYear %]
+[% project.startYear %] - [% project.endYear %]<br />
+[% ELSIF project.isActive %]
+Continuous project<br />
+[% END %]
+[% IF project.investigator %]
+<strong>Project Coordinator:</strong> 
+[% project.investigator.0.name.fullName %]<br />
+[% END %]
+[% IF project.funder %]
+<strong>Funder:</strong>
+[% FOREACH fund IN project.funder %]
+[% fund %]<br />
+[% END %]
+[% END %]
+[% IF project.description %]
+<strong>Description:</strong>
+[% IF project.description.length() > 200 %]
+[% project.description.substr(0, 200); %]...
+[% ELSE %]
+[% project.description %]
+[% END %]
+[% END %]
+</li>
+[% END %]
+</ul>
+
+[% INCLUDE paginationProj.tt %]
+
+[% END %]
+</span>
+
+<!-- END projList.tt -->
+
+[% INCLUDE footer_search.tt %]

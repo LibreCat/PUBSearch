@@ -1,0 +1,23 @@
+<!-- BEGIN bup_publist_js.tmpl -->
+
+[% IF total == 0 %]
+document.write ("<h3>Die pers&ouml;nliche Publikationsliste wird in K&uuml;rze freigegeben.<br />The personal publication list is awaiting approval. Please consult later.</h3>") ;
+document.write ("Weitere Information / Further information: <a href=\"[% h.host %]\">[% h.host %]</a>") ;
+[% STOP %]
+[% END %]
+
+document.write ('<!-- Citations in this list are displayed in "[% style %]" style. -->');
+document.write ('<ul>') ;
+[% FOREACH entry IN hits %]
+[% string = entry.citation.$style %]
+[% string2 = string.replace("'", "&apos;") %]
+[% IF style == 'frontShort' %][% title = entry.mainTitle.replace("'", "&apos;") %][% END %]
+document.write('<li>');
+[% IF style == "frontShort" %]
+document.write('<a href="/publication/[% entry._id %]">[% title %]</a><br />');
+[% END %]
+document.write('[%- string2 -%]<br /> [% IF !phillister %][% INCLUDE links_js.tt %][% END %]</li>');
+[% END %]
+document.write ('</ul>') ;
+
+<!-- END bup_publist_js.tmpl -->

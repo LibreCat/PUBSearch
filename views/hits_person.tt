@@ -1,0 +1,67 @@
+<!-- BEGIN hits_person.tt -->
+
+<!-- This publication list is displayed in "[% style %]" style and sorted "[% sorto %]" -->
+[% num = total; n = 0 %]
+<div class="row">
+[% IF request.path == "/marked" %]<ul style="list-style-type:none;" id="sortable">[% END %]
+[% FOREACH entry IN hits %]
+[% IF request.path == "/marked" %]<li style="margin-left:-25px;min-height:120px;" class="ui-state-default" id="fade_[% n+1 %]">[% END %]
+<div class="span1" style="text-align:right">[[% num - n %]] [% n = n +1 %]</div>
+<div class="span6">
+  <i>[% entry.publishingYear %] | [% h.display_doctypes(entry.documentType) %] | PUB-ID: <span class="pubid">[% entry._id %]</span></i>
+</div>
+<div class="span1" style="text-align:right;">
+  <i><a [% IF request.path == "/marked" %]id="clickme_[% n %]" [% END %]class="mark" href="#" data-marked="[% h.is_marked(entry.oId) %]" data-id="[% entry.oId %]">[% IF h.is_marked(entry.oId) %]Unmark[% ELSE %]Mark[% END %]</a></i>
+</div>
+<div class="span1"></div>
+<div class="span7">
+   [% IF style == 'frontShort' %]
+	<a href="/publication/[% entry._id %]">[% entry.mainTitle %]</a><br />
+   [% END %]
+   [% entry.citation.$style %]<br />
+   [% INCLUDE links.tt %]
+</div>
+<div class="span8">&nbsp;</div>
+[% IF request.path == "/marked" %]
+<script type="text/javascript" charset="utf-8">
+$('#clickme_[% n %]').click(function() {
+  $('#fade_[% n %]').fadeOut('slow', function() {
+  });
+});
+</script>
+[% END %]
+[% IF request.path == "/marked" %]</li>[% END %]
+
+[% END %]
+[% IF request.path == "/marked" %]</ul>[% END %]
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
+// mark
+
+$('a.mark').click(function(evt) {
+  evt.preventDefault();
+  var a = $(this);
+  var marked = a.data('marked');
+  if (marked == 0) {
+    $('div.unmark_all').empty().append('<a class="unmark-all" href="#">Unmark all</a>');
+    $.post('[% h.host %]/marked/'+a.data('id'), function(res) {
+      $('.total-marked').text(res.total);
+      a.data('marked', 1).text('Unmark');
+    }, 'json');
+  } else {
+    $.post('[% h.host %]/marked/'+a.data('id')+'?x-tunneled-method=DELETE', function(res) {
+      $('.total-marked').text(res.total);
+      a.data('marked', 0).text('Mark');
+    }, 'json');
+    if(res.total != "0"){
+      $('div.unmark_all').empty().append('<a class="unmark-all" href="#">Unmark all</a>');
+    }
+    if(res.total == "0") {
+      $('div.unmark_all').empty();
+    }
+  }
+});
+</script>
+<!-- END hits_person.tt -->

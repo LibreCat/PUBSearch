@@ -1,0 +1,6 @@
+<!-- BEGIN facet_doctype.tt -->
+<h2>Document types</h2>
+[% FOREACH type IN facets.documentType.terms %] 
+<a href="/doctype/[% type.term %]">[% type.term %] ([% type.count %])</a> <br />
+[% END %]
+<!-- END facet_doctype.tt -->
